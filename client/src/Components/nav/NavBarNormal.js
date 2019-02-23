@@ -9,7 +9,7 @@ class NavBarNormal extends Component {
     render() {
         this.extComponent = this.props.loggedIn() ?  (<Navbar.Collapse className="justify-content-end">
             <Nav.Item>
-                <span className="navbar-text-white"> Hello, Mike. </span>
+                <span className="navbar-text-white">{`Hello, ${this.props.currentUser.company_name}`}</span>
             </Nav.Item>
             <Nav.Item>
                 <Link to={'/update'}>

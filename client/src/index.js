@@ -39,7 +39,13 @@ class App extends React.Component {
                 <Fragment>
                     <NavBarNormal loggedIn={this.loggedIn} {...this.state}/>
                     <Container>
-                        <Route exact path={'/'} component={Home}/>
+                        <Route exact path={'/'} render={props => {
+                            return this.loggedIn() ? (
+                                <Redirect to={'/search'}/>
+                            ) : (
+                                <Home {...props}/>
+                            )
+                        }}/>
                         <Route path={'/login'} render={props => {
                             return this.loggedIn() ? (
                                 <Redirect to={'/search'}/>
