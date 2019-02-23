@@ -25,3 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 \.idea/
+
+server/properties\.js
+
+server/config\.js
