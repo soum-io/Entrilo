@@ -13,7 +13,8 @@ class SignUp extends Component {
             company_name:'',
             username:'',
             password:'',
-            responseToPost:''
+            responseToPost:'',
+            error:''
         }
     }
 
@@ -28,8 +29,15 @@ class SignUp extends Component {
             },
             body: JSON.stringify({ company_name: this.state.company_name, username: this.state.username, password: this.state.password}),
         });
-        const body = await response.text();
-        this.setState({ responseToPost: body });
+        if(response.ok){
+            this.props.history.push('/login');
+        }
+        else{
+            this.setState({error:"Unable to successfully login"});
+            setTimeout(()=>{
+                this.setState({error:''})
+            }, 5000);
+        }
     };
 
 
@@ -52,12 +60,14 @@ class SignUp extends Component {
                 <br/>
                 <TextField
                 hintText="Enter your Password"
-                type="email"
+                type="password"
                 floatingLabelText="Password"
                 onChange = {(event,newValue) => this.setState({password:newValue})}
                 />
                 <br/>
                 <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleSubmit(event)}/>
+                <br/>
+                <div>{this.state.error}</div>
         </div>
         </MuiThemeProvider>
         </div>

@@ -11,33 +11,56 @@ import Search from "./Components/Search";
 import Results from "./Components/Results";
 import Container from "react-bootstrap/es/Container";
 
+const defaultUser = {
+    company_name:'',
+    _id:''
+};
+
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.currentUser = null
+        let user = window.sessionStorage.getItem('user');
+        this.state = {currentUser: user ? JSON.parse(user) : defaultUser};
         this.loginUser = this.loginUser.bind(this);
+        console.log(this.state.currentUser);
     }
 
+    loggedIn = () => {
+        return this.state.currentUser.company_name && this.state.currentUser._id
+    };
+
     loginUser(user) {
-        this.setState({currentUser: user});
+        this.setState({currentUser: user},
+            () => {window.sessionStorage.setItem('user', JSON.stringify(user))});
     }
 
     render() {
         return (
             <BrowserRouter>
                 <Fragment>
-                    <NavBarNormal/>
+                    <NavBarNormal loggedIn={this.loggedIn} {...this.state}/>
                     <Container>
-                        <Route exact path={'/'} component={Home}/>
-                        <Route path={'/login'} render={props => {
-                            return this.currentUser ? (
-                                <Redirect to={'/'}/>
+                        <Route exact path={'/'} render={props => {
+                            return this.loggedIn() ? (
+                                <Redirect to={'/search'}/>
                             ) : (
-                                <Login onLogin={this.loginUser}/>
+                                <Home {...props}/>
+                            )
+                        }}/>
+                        <Route path={'/login'} render={props => {
+                            return this.loggedIn() ? (
+                                <Redirect to={'/search'}/>
+                            ) : (
+                                <Login {...props} onLogin={this.loginUser}/>
                             )
                         }}/>
                         <Route path='/signUp' component={SignUp}/>
                         <Route path='/search' component={Search}/>
+                        <Route path='/logout' render={props => {
+                            this.setState({currentUser:defaultUser}, () =>
+                                window.sessionStorage.removeItem('user'));
+                            return <Redirect to='/'/>
+                        }}/>
                         <Route path='/results' component={Results}/>
                     </Container>
                 </Fragment>
