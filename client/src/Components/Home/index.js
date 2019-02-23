@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import './App.css';
-class App extends Component {
+import { Link } from "react-router-dom";
+import './index.css';
+import Router from '../Router'
+
+class Home extends Component {
 
 
   render() {
     return (
         <div>
-         <button className="Login">
-          Login
-          </button>
-
-          <button className="Sign Up">
-          Sign Up
-          </button>
+        <button><Link to='/Login'>Login</Link></button>
+        <button><Link to='/SignUp'>SignUp</Link></button>
+          <Router/>
        </div>
+
+
 
     );
   }
 }
-export default App;
+export default Home;
