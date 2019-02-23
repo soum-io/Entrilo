@@ -29,3 +29,7 @@ yarn-error.log*
 server/properties\.js
 
 server/config\.js
+
+client/build/
+
+client/package-lock\.json

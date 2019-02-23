@@ -17,6 +17,10 @@ class Login extends Component {
         e.preventDefault();
         const response = await fetch('/api/login', {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({ username: this.state.username, password: this.state.password}),
         });
         const body = await response.text();

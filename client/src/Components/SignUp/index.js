@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import './index.css';
@@ -21,7 +21,11 @@ class SignUp extends Component {
         e.preventDefault();
         const response = await fetch('/api/signup', {
             method: 'POST',
-            body: JSON.stringify({ company_name: this.company_name, username: this.state.username, password: this.state.password}),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ company_name: this.state.company_name, username: this.state.username, password: this.state.password}),
         });
         const body = await response.text();
         this.setState({ responseToPost: body });

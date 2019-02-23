@@ -9,6 +9,11 @@ module.exports.validAirlineClass = function(airline_class){
     return true;//TODO
 };
 
+module.exports.validVenueName = function(venue){
+    return true;//TODO
+};
+
+
 module.exports.validName = function(name){
     return true;//TODO
 };

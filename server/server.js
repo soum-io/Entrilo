@@ -74,6 +74,46 @@ app.get('/api/logout',
         res.redirect('/');
     });
 
+app.put('/api/employee/:id',
+    async function(req,res){
+        try{
+            var name = req.body.name;
+            var airline_class = req.body.airline_class;
+            var longitude = req.body.longitude;
+            var latitude = req.body.latitude;
+            var data = {};
+            if(utils.validVenueName(name)){
+                data['employee.$.name'] = name;
+            }
+            if(!isNaN(parseFloat(longitude))){
+                data['employee.$.longitude'] = longitude;
+            }
+            if(!isNaN(parseFloat(latitude))) {
+                data['employee.$.latitude'] = latitude;
+            }
+            if(utils.validAirlineClass(airline_class)){
+                data['employee.$.airline_class'] = airline_class;
+            }
+            if(data != {}) {
+                const db = req.app.locals.db;
+                console.log(data);
+                var company = await db.collection("companies").findOneAndUpdate({_id: ObjectID(req.user._id),'employee._id':ObjectID(req.params.id)}, {
+                    $set: data,
+                }, {returnOriginal: false});
+                if (company) {
+                    res.send(company.value);
+                } else {
+                    res.send({"message": "Could not update employee"});
+                }
+            }else{
+                res.send({"message":"Invalid data"});
+            }
+        }catch (e) {
+            console.log(e);
+            res.end();
+        }
+    });
+
 app.delete('/api/employee/:id',
     async function(req,res){
         try{
@@ -83,7 +123,7 @@ app.delete('/api/employee/:id',
             if(company){
                 res.send(company.value);
             }else{
-                res.send({"message":"Could not create employee"});
+                res.send({"message":"Could not delete employee"});
             }
         }catch (e) {
             console.log(e);
@@ -98,13 +138,88 @@ app.post('/api/employee',
             var airline_class = req.body.airline_class;
             var longitude = req.body.longitude;
             var latitude = req.body.latitude;
-            if(utils.validName(name) && parseFloat(longitude) && parseFloat(latitude) && utils.validAirlineClass(airline_class)){
+            if(utils.validName(name) && !isNaN(parseFloat(longitude)) && !isNaN(parseFloat(latitude)) && utils.validAirlineClass(airline_class)){
                 const db = req.app.locals.db;
                 var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$push:{employees:{name:name,airline_class:airline_class,longitude:longitude,latitude:latitude,_id:ObjectID()}}},{returnOriginal:false});
                 if(company){
                     res.send(company.value);
                 }else{
                     res.send({"message":"Could not create employee"});
+                }
+            }else{
+                res.send("error")//TODO throw better error
+            }
+        }catch (e) {
+            console.log(e);
+            res.end();
+        }
+    });
+
+app.delete('/api/venue/:id',
+    async function(req,res){
+        try{
+            var employee_id = req.params.id;
+            const db = req.app.locals.db;
+            var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$pull:{venue:{_id:ObjectID(employee_id)}}},{returnOriginal:false});
+            if(company){
+                res.send(company.value);
+            }else{
+                res.send({"message":"Could not delete venue"});
+            }
+        }catch (e) {
+            console.log(e);
+            res.end();
+        }
+    });
+
+app.put('/api/venue/:id',
+    async function(req,res){
+        try{
+            var name = req.body.name;
+            var longitude = req.body.longitude;
+            var latitude = req.body.latitude;
+            var data = {};
+            if(utils.validVenueName(name)){
+                data['venue.$.name'] = name;
+            }
+            if(!isNaN(parseFloat(longitude))){
+                data['venue.$.longitude'] = longitude;
+            }
+            if(!isNaN(parseFloat(latitude))) {
+                data['venue.$.latitude'] = latitude;
+            }
+            if(data != {}) {
+                const db = req.app.locals.db;
+                var company = await db.collection("companies").findOneAndUpdate({_id: ObjectID(req.user._id),'venue._id':ObjectID(req.params.id)}, {
+                    $set: data,
+                }, {returnOriginal: false});
+                if (company) {
+                    res.send(company.value);
+                } else {
+                    res.send({"message": "Could not update venue"});
+                }
+            }else{
+                res.send({"message":"Invalid data"});
+            }
+        }catch (e) {
+            console.log(e);
+            res.end();
+        }
+    });
+
+app.post('/api/venue',
+    async function(req,res){
+        try{
+            var name = req.body.name;
+            var longitude = req.body.longitude;
+            var latitude = req.body.latitude;
+            if(utils.validVenueName(name) && !isNaN(parseFloat(longitude)) && !isNaN(parseFloat(latitude))){
+                const db = req.app.locals.db;
+                var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$push:{venue:{name:name,longitude:longitude,latitude:latitude,_id:ObjectID()}}},{returnOriginal:false});
+                if(company){
+                    res.send(company.value);
+                }else{
+                    res.send({"message":"Could not create venue"});
                 }
             }else{
                 res.send("error")//TODO throw better error
