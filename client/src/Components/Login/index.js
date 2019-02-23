@@ -4,6 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 
 
 class Login extends Component {
@@ -12,6 +13,7 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
+            redirector: false
         }
     }
 
@@ -28,8 +30,7 @@ class Login extends Component {
         });
         if(response.ok){
             const resJson = await response.json();
-            this.props.onLogin(resJson);
-
+            this.setState({redirector:true}, this.props.onLogin(resJson))
         }else{
             this.setState({error:"Unable to successfully login"});
             setTimeout(()=>{
@@ -41,7 +42,8 @@ class Login extends Component {
     };
 
     render() {
-        return (
+
+        return this.state.redirector ? <Redirect to={'/search'}/> : (
             <div>
                 <MuiThemeProvider>
                     <div>
