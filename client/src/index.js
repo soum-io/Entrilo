@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import {BrowserRouter, Route} from 'react-router-dom'
@@ -19,13 +19,15 @@ class App extends React.Component{
     render(){
         return (
         <BrowserRouter>
-            <Container>
+            <Fragment>
                 <NavBarNormal/>
-                <Route exact path={'/'} component={Home} />
-                <Route path={'/login'} component={Login}/>
-                <Route path='/signUp' component={SignUp}/>
-                <Route path='/search' component={Search}/>
-            </Container>
+                <Container>
+                    <Route exact path={'/'} component={Home} />
+                    <Route path={'/login'} component={Login}/>
+                    <Route path='/signUp' component={SignUp}/>
+                    <Route path='/search' component={Search}/>
+                </Container>
+            </Fragment>
         </BrowserRouter>)
     }
 }

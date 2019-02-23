@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
-import {Link} from "react-router-dom";
 import './index.css';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import Dropdown from 'react-bootstrap/Dropdown'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
@@ -18,13 +16,19 @@ class Search extends Component {
         this.state = {
             startDate: new Date(),
             endDate: new Date(),
-            peopleInputs: ['person0'],
-            venueInputs: ['venue0']
+            peopleInputs: [],
+            venueInputs: []
         };
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
         this.deletePerson = this.deletePerson.bind(this);
         this.deleteVenue = this.deleteVenue.bind(this);
+        this.onChangeFirst = this.onChangeFirst.bind(this);
+        this.onChangeLast = this.onChangeLast.bind(this);
+        this.onChangeAddress = this.onChangeAddress.bind(this);
+        this.onChangeAC = this.onChangeAC.bind(this);
+        this.onChangeVenue = this.onChangeVenue.bind(this);
+        this.onChangeVenueLocation = this.onChangeVenueLocation.bind(this);
     }
 
     handleChangeStart(date) {
@@ -40,7 +44,6 @@ class Search extends Component {
     }
 
     render() {
-        console.log(this.state);
         return (
             <div>
                 <Form>
@@ -57,26 +60,37 @@ class Search extends Component {
                             {this.state.peopleInputs.map((input, index) =>
                                 <Row key={index}>
                                     <Col>
-                                        <Form.Control placeholder="First name"/>
+                                        <Form.Group controlId={`person${index}_first`}>
+                                        <Form.Control placeholder="First name" onChange={this.onChangeFirst(index)} value={input.first}/>
+                                        </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Control placeholder="Last name"/>
+                                        <Form.Group controlId={`person${index}_last`}>
+                                        <Form.Control placeholder="Last name" onChange={this.onChangeLast(index)} value={input.last}/>
+                                        </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Control placeholder="Address Location"/>
+                                        <Form.Group controlId={`person${index}_address`}>
+                                        <Form.Control placeholder="Address Location" onChange={this.onChangeAddress(index)} value={input.address}/>
+                                        </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Dropdown>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Default Airplane Class
-                                            </Dropdown.Toggle>
+                                        <Form.Group controlId={`person${index}_ac`}>
+                                        <Form.Control as='select' onChange={this.onChangeAC(index)} value={input.ac}>
+                                            {/*<Dropdown.Toggle variant="success" id="dropdown-basic">*/}
+                                                {/*Default Airplane Class*/}
+                                            {/*</Dropdown.Toggle>*/}
 
-                                            <Dropdown.Menu>
-                                                <Dropdown.Item href="#">Economy</Dropdown.Item>
-                                                <Dropdown.Item href="#">Premium</Dropdown.Item>
-                                                <Dropdown.Item href="#">First</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
+                                            {/*<Dropdown.Menu>*/}
+                                                {/*<Dropdown.Item >Economy</Dropdown.Item>*/}
+                                                {/*<Dropdown.Item >Premium</Dropdown.Item>*/}
+                                                {/*<Dropdown.Item >First</Dropdown.Item>*/}
+                                            {/*</Dropdown.Menu>*/}
+                                            <option>Economy</option>
+                                            <option>Premium</option>
+                                            <option>First</option>
+                                        </Form.Control>
+                                        </Form.Group>
                                     </Col>
                                     <Col xs={1}>
                                         <Button onClick={this.deletePerson(index)} variant={'outline-danger'}>X</Button>
@@ -92,10 +106,14 @@ class Search extends Component {
                             {this.state.venueInputs.map((input, index) =>
                                 <Row key={index}>
                                     <Col>
-                                        <Form.Control placeholder="Venue Name"/>
+                                        <Form.Group controlId={`venue${index}_name`}>
+                                        <Form.Control placeholder="Venue Name" onChange={this.onChangeVenue(index)} value={input.venue}/>
+                                        </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Control placeholder="Address Location"/>
+                                        <Form.Group controlId={`venue${index}_location`}>
+                                        <Form.Control placeholder="Address Location" onChange={this.onChangeVenueLocation(index)} value={input.location}/>
+                                        </Form.Group>
                                     </Col>
                                     <Col xs={1}>
                                         <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}>X</Button>
@@ -135,19 +153,91 @@ class Search extends Component {
     }
 
     appendPeople() {
-        let newInput = `person${this.state.peopleInputs.length}`;
+        let newInput = {first:'',last:'', address:'',ac:'Economy'};
         this.setState(prevState => ({peopleInputs: prevState.peopleInputs.concat([newInput])}));
     }
 
     appendVenue() {
-        let newInput = `venue${this.state.venueInputs.length}`;
+        let newInput = {venue:'', location:''};
         this.setState(prevState => ({venueInputs: prevState.venueInputs.concat([newInput])}));
+    }
+
+    onChangeFirst(index){
+        return (e) => {
+            e.persist();
+            this.setState(prevState => {
+                let person = prevState.peopleInputs[index];
+                person.first = e.target.value;
+                prevState.peopleInputs[index] = person;
+                return ({peopleInputs: prevState.peopleInputs})
+            })
+        }
+    }
+
+    onChangeLast(index){
+        return (e) => {
+            e.persist();
+            this.setState(prevState => {
+                let person = prevState.peopleInputs[index];
+                person.last = e.target.value;
+                prevState.peopleInputs[index] = person;
+                return ({peopleInputs: prevState.peopleInputs})
+            })
+        }
+    }
+
+    onChangeAddress(index){
+        return (e) => {
+            e.persist();
+            this.setState(prevState => {
+                let person = prevState.peopleInputs[index];
+                person.address = e.target.value;
+                prevState.peopleInputs[index] = person;
+                return ({peopleInputs: prevState.peopleInputs})
+            })
+        }
+    }
+
+    onChangeAC(index){
+        return (e) => {
+            e.persist();
+            this.setState(prevState => {
+                let person = prevState.peopleInputs[index];
+                person.ac = e.target.value;
+                prevState.peopleInputs[index] = person;
+                return ({peopleInputs: prevState.peopleInputs})
+            })
+        }
+    }
+
+    onChangeVenue(index){
+        return (e) => {
+            e.persist();
+            this.setState(prevState => {
+                let venue = prevState.venueInputs[index];
+                venue.venue = e.target.value;
+                prevState.venueInputs[index] = venue;
+                return ({venueInputs: prevState.venueInputs})
+            })
+        }
+    }
+
+    onChangeVenueLocation(index){
+        return (e) => {
+            e.persist();
+            this.setState(prevState => {
+                let venue = prevState.venueInputs[index];
+                venue.location = e.target.value;
+                prevState.venueInputs[index] = venue;
+                return ({venueInputs: prevState.venueInputs})
+            })
+        }
     }
 
     // functionality not working
     deletePerson(index) {
         return (() => {
-            console.log(index);
+            //console.log(index);
             this.setState(prevState => {
                     prevState.peopleInputs.splice(index, 1);
                     return ({peopleInputs: prevState.peopleInputs})
@@ -159,7 +249,6 @@ class Search extends Component {
     // not working
     deleteVenue(index) {
         return (() => {
-            console.log(index);
             this.setState(prevState => {
                     prevState.venueInputs.splice(index, 1);
                     return ({venueInputs: prevState.venueInputs})
