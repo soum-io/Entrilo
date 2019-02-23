@@ -63,9 +63,9 @@ app.get('/api/login',
     });
 
 app.post('/api/login',
-    passport.authenticate('local', { failureRedirect: '/api/login' }),
+    passport.authenticate('local'),
     function(req, res) {
-        res.redirect('/');
+        res.status(200).send(req.user);
     });
 
 app.get('/api/logout',

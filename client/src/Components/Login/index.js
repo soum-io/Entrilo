@@ -3,6 +3,9 @@ import './index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import SnackBar from 'material-ui/Snackbar';
+import PropTypes from "prop-types";
+
 
 class Login extends Component {
     constructor(props) {
@@ -24,8 +27,18 @@ class Login extends Component {
             },
             body: JSON.stringify({username: this.state.username, password: this.state.password}),
         });
-        const body = await response.text();
-        this.setState({responseToPost: body});
+        if(response.ok){
+            const resJson = await response.json();
+            console.log(resJson);
+            this.props.onLogin(resJson);
+        }else{
+            this.setState({error:"Unable to successfully login"});
+            setTimeout(()=>{
+                this.setState({error:''})
+            }, 5000);
+        }
+        //const body = await response.text();
+        //this.setState({responseToPost: body});
     };
 
     render() {
@@ -48,6 +61,8 @@ class Login extends Component {
                         <br/>
                         <RaisedButton label="Submit" primary={true} style={style}
                                       onClick={(event) => this.handleSubmit(event)}/>
+                        <br/>
+                        <div>{this.state.error}</div>
                     </div>
                 </MuiThemeProvider>
             </div>
@@ -58,4 +73,9 @@ class Login extends Component {
 const style = {
     margin: 15,
 };
+
+Login.propTypes = {
+    onLogin: PropTypes.func.isRequired
+};
+
 export default Login;
