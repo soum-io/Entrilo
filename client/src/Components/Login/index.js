@@ -3,6 +3,8 @@ import './index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import NavBarNormal from "../nav/NavBarNormal.js"
+
 class Login extends Component {
     constructor(props){
         super(props);
@@ -30,6 +32,7 @@ class Login extends Component {
     render() {
         return (
             <div>
+            < NavBarNormal />
             <MuiThemeProvider>
             <div>
             <TextField

@@ -4,6 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import './index.css';
+import NavBarNormal from "../nav/NavBarNormal.js"
 
 class SignUp extends Component {
     constructor(props){
@@ -35,6 +36,7 @@ class SignUp extends Component {
     render() {
         return (
             <div>
+            < NavBarNormal />
             <MuiThemeProvider>
             <div>
                 <TextField
