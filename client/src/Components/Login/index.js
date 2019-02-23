@@ -32,7 +32,6 @@ class Login extends Component {
     render() {
         return (
             <div>
-            < NavBarNormal />
             <MuiThemeProvider>
             <div>
             <TextField

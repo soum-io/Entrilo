@@ -36,7 +36,6 @@ class SignUp extends Component {
     render() {
         return (
             <div>
-            < NavBarNormal />
             <MuiThemeProvider>
             <div>
                 <TextField

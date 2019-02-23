@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
 import { Link } from "react-router-dom";
 import './index.css';
-import Router from '../Router'
-import NavBarNormal from "../nav/NavBarNormal.js"
+import { Button } from "react-bootstrap";
 
 
 
@@ -11,12 +10,10 @@ class Home extends Component {
 
   render() {
     return (
-        <div>
-        < NavBarNormal />
-        <button><Link to='/Login'>Login</Link></button>
-        <button><Link to='/SignUp'>SignUp</Link></button>
-          <Router/>
-       </div>
+        <Fragment>
+            <Link to='/login'><Button>Login</Button></Link>
+            <Link to='/signUp'><Button>SignUp</Button></Link>
+       </Fragment>
     );
   }
 }
