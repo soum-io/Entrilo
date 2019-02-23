@@ -6,7 +6,6 @@ import Home from '../Home'
 
 const Router = () => (
     <Switch>
-    <Route exact path='/' component={Home}/>
      <Route exact path='/Login' component={Login}/>
      <Route path='/SignUp' component={SignUp}/>
     </Switch>

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 class Login extends Component {
@@ -9,9 +8,21 @@ class Login extends Component {
         super(props);
         this.state={
             username:'',
-            password:''
+            password:'',
+            responseToPost: ''
         }
     }
+
+    handleSubmit = async e => {
+        e.preventDefault();
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            body: JSON.stringify({ username: this.state.username, password: this.state.password}),
+        });
+        const body = await response.text();
+        this.setState({ responseToPost: body });
+    };
+
     render() {
         return (
             <div>
@@ -30,7 +41,7 @@ class Login extends Component {
         onChange = {(event,newValue) => this.setState({password:newValue})}
         />
         <br/>
-        <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+        <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleSubmit(event)}/>
         </div>
         </MuiThemeProvider>
         </div>
