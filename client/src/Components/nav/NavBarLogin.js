@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Navbar from 'react-bootstrap/Navbar'
+import './NavBar.css';
 
 class NavBarLogin extends Component {
     render(){
         return (
-            <Navbar>
-              <Navbar.Brand >
+            <Navbar bg="dark">
+              <Navbar.Brand className = "navbar-text-white">
                   <img
                     src="airplane.png"
                     width="20"

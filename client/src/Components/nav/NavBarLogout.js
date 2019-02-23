@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
+import './NavBar.css';
 
 class NavBarLogout extends Component {
     render(){
         return (
-            <Navbar>
+            <Navbar bg="dark">
               <Navbar.Brand >
                   <img
                     src="airplane.png"
@@ -14,12 +15,12 @@ class NavBarLogout extends Component {
                     className="d-inline-block align-top"
                     alt="React Bootstrap logo"
                   />
-                  Entrilo
+                  <span className = "navbar-text-white" > Entrilo </span>
               </Navbar.Brand>
               <Navbar.Toggle />
               <Navbar.Collapse className="justify-content-end">
               <Nav.Item >
-                  Hello, Mike.
+                  <span className = "navbar-text-white" > Hello, Mike. </span>
               </Nav.Item>
               <Nav.Link>
                   <img
@@ -32,7 +33,7 @@ class NavBarLogout extends Component {
               </Nav.Link>
               <Nav.Link>
                   <Navbar.Text>
-                    <a href="#login">Logout</a>
+                    <a href="#login" className = "navbar-text-white">Logout</a>
                   </Navbar.Text>
               </Nav.Link>
               </Navbar.Collapse>
