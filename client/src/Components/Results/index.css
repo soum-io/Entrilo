@@ -1,0 +1,10 @@
+.singleResult {
+  border: 2px solid grey;
+  border-radius: 5px;
+}
+
+.btn-height {
+    padding: 0% 0;
+    /* define values in pixels / Percentage or em. whatever suits
+       your requirements */
+}

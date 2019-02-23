@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col'
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {Link, withRouter} from "react-router-dom";
 
 
 class Search extends Component {
@@ -144,8 +145,8 @@ class Search extends Component {
                     </Form.Group>
 
 
-                    <Button variant="primary" type="submit">
-                        Submit
+                    <Button variant="outline-primary" type="submit">
+                        <Link to="results">Results</Link>
                     </Button>
                 </Form>
             </div>
