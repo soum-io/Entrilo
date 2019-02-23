@@ -7,8 +7,6 @@ import Nav from "react-bootstrap/Nav";
 class NavBarNormal extends Component {
 
     render() {
-
-        console.log(this.props.location.pathname);
         switch (this.props.location.pathname) {
             case '/login':
                 this.extComponent =

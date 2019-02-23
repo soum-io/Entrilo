@@ -8,22 +8,24 @@ import NavBarNormal from "./Components/nav/NavBarNormal";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Search from "./Components/Search";
+import Container from "react-bootstrap/es/Container";
 
 class App extends React.Component{
     constructor(props){
         super(props);
+        this.currentUser = null
     }
 
     render(){
         return (
         <BrowserRouter>
-            <div>
+            <Container>
                 <NavBarNormal/>
                 <Route exact path={'/'} component={Home} />
                 <Route path={'/login'} component={Login}/>
                 <Route path='/signUp' component={SignUp}/>
                 <Route path='/search' component={Search}/>
-            </div>
+            </Container>
         </BrowserRouter>)
     }
 }
