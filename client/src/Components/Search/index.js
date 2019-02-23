@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import './index.css';
-import Router from '../Router'
-import NavBarLogout from "../nav/NavBarLogout.js"
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -11,6 +9,7 @@ import Col from 'react-bootstrap/Col'
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import NavBarNormal from "../nav/NavBarNormal";
 
 
 class Search extends Component {
@@ -42,7 +41,7 @@ class Search extends Component {
   render() {
     return (
         <div>
-        < NavBarLogout />
+        < NavBarNormal />
         <Form>
           <Form.Group controlId="tripName">
             <Form.Label>Trip Name</Form.Label>
