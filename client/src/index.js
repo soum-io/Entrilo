@@ -13,7 +13,7 @@ import Container from "react-bootstrap/es/Container";
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.currentUser = null
+        this.state = {currentUser: window.sessionStorage.currentUser};
         this.loginUser = this.loginUser.bind(this);
     }
 

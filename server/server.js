@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
 app.use(require('cookie-parser')());
-app.use(require('express-session')({ secret: 'thequickbrownfoxjumpsoversomething', resave: false, saveUninitialized: false }));
+app.use(require('express-session')({ secret: 'thequickbrownfoxjumpsoversomething', resave: true, saveUninitialized: false }));
 
 // Initialize Passport and restore authentication state, if any, from the
 // session.

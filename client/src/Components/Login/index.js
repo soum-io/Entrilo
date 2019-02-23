@@ -3,7 +3,6 @@ import './index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import SnackBar from 'material-ui/Snackbar';
 import PropTypes from "prop-types";
 
 
@@ -13,12 +12,12 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            responseToPost: ''
         }
     }
 
     handleSubmit = async e => {
         e.preventDefault();
+        console.log(this.state);
         const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
@@ -29,8 +28,8 @@ class Login extends Component {
         });
         if(response.ok){
             const resJson = await response.json();
-            console.log(resJson);
             this.props.onLogin(resJson);
+
         }else{
             this.setState({error:"Unable to successfully login"});
             setTimeout(()=>{
