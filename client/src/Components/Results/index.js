@@ -69,11 +69,8 @@ class Results extends Component {
 
 		if(this.state.all_results_loaded){
 			this.state.defaultCostOpen.map((_, index) => {
-				fetch("https://api.yelp.com/v3/businesses/search?location="+this.state.defaultLocation[index]+"limit=3",{method: 'GET',
-							headers:{
-								'Authorization': 'Bearer hGly48lgeqWTCo_lvHZYzvpNmoyuvK-awoGpsF5kWzr_loJYaD0wKDogWo171o-sWX1bzhRkNdVDmXndguWNt_DCV23DpSN4XVLgzUj7XntW1Go_55YPtQeDK-hwXHYx',
-							},
-							credentials: 'include'}).then(res=> res.json()).then(json => {
+				fetch("/yelp?location="+this.state.defaultLocation[index],{method: 'GET'})
+				.then(res=> res.json()).then(json => {
 								this.state.isYelpLoaded[index] = true;
 								this.forceUpdate();
 								this.state.items[index] = json;
@@ -266,21 +263,8 @@ class Results extends Component {
 									</Col>
 								</Row>
 								<table>
-								<tr>
-									<th>
-										Venue Name
-									</th>
-									<th>
-										Address
-									</th>
-									<th>
-										Yelp Price
-									</th>
-								</tr>
 								<Collapse in={this.state.isYelpLoaded[index]}>
-									<div>
 										{this.showYelp(index)}
-									</div>
 								</Collapse>
 								</table>
 							</Form.Group>
@@ -298,7 +282,18 @@ class Results extends Component {
 			return;
 		} else {
 			 return (
-				 <div>
+				 <span>
+				 <tr>
+					 <th>
+						 Venue Name
+					 </th>
+					 <th>
+						 Address
+					 </th>
+					 <th>
+						 Yelp Price
+					 </th>
+				 </tr>
 				 {this.state.items[index]["businesses"].map((_, yelpIdx) =>
 					 <tr>
 						 <td>
@@ -312,7 +307,7 @@ class Results extends Component {
 						 </td>
 					 </tr>
 			 	 )}
-				 </div>
+				 </span>
 			 );
 		}
     }
