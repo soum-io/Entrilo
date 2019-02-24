@@ -44,3 +44,11 @@
     background-color:#ddd;
     cursor: pointer;
 }
+
+.adderBtn {
+    margin-bottom: 10px
+}
+
+/* .form-group > div {
+    display: block !important;
+} */

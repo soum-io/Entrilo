@@ -44,3 +44,7 @@
 .searchDiv {
     padding-top: 10px;
 }
+
+#venueAdder .form-group > div, #peopleAdder .form-group > div {
+    display: block !important;
+}
