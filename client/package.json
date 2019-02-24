@@ -11,6 +11,7 @@
     "react-bootstrap-date-picker": "^5.1.0",
     "react-datepicker": "^2.1.0",
     "react-dom": "^16.8.3",
+    "react-places-autocomplete": "^7.2.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5"
   },

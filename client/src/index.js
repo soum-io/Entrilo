@@ -8,6 +8,7 @@ import NavBarNormal from "./Components/nav/NavBarNormal";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Search from "./Components/Search";
+import Account from "./Components/Account";
 import Container from "react-bootstrap/es/Container";
 
 class App extends React.Component {
@@ -37,6 +38,7 @@ class App extends React.Component {
                         }}/>
                         <Route path='/signUp' component={SignUp}/>
                         <Route path='/search' component={Search}/>
+                        <Route path='/account' component={Account}/>
                     </Container>
                 </Fragment>
             </BrowserRouter>)

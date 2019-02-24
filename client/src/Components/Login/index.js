@@ -21,6 +21,7 @@ class Login extends Component {
         e.preventDefault();
         const response = await fetch('/api/login', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
