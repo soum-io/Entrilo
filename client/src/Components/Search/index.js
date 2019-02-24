@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Autocomplete from 'react-autocomplete'
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 //What did the duck say to bar owner?
 
 //Put it on my bill
@@ -178,7 +179,75 @@ class Search extends Component {
                                     </Col>
                                     <Col>
                                         <Form.Group controlId={`person${index}_address`}>
-                                        <Form.Control placeholder="Address Location" onChange={this.onChangeAddress(index)} value={input.location}/>
+                                            <PlacesAutocomplete
+                                                onChange={value => {
+                                                    this.state.peopleInputs[index].location = value;
+                                                    this.forceUpdate();
+                                                    this.setState({
+                                                        latitude: null,
+                                                        longitude: null,
+                                                        errorMessage: '',
+                                                    });
+                                                }}
+                                                value={input.location}
+                                                onSelect={async (address)=>{
+                                                    var loc = await geocodeByAddress(address);
+                                                    this.state.peopleInputs[index].location = loc[0].formatted_address;
+                                                    this.forceUpdate();
+                                                    loc = loc[0].geometry.location;
+                                                    this.state.peopleInputs[index].latitude = loc.lat();
+                                                    this.forceUpdate();
+                                                    this.state.peopleInputs[index].longitude = loc.lng();
+                                                    this.forceUpdate();
+                                                }}
+                                                onError={this.handleError}
+                                                shouldFetchSuggestions={input.location.length > 2}
+                                            >
+                                                {({ getInputProps, suggestions, getSuggestionItemProps }) => {
+                                                    return (
+                                                        <div className="Demo__search-bar-container">
+                                                            <div className="Demo__search-input-container">
+                                                                <input
+                                                                    {...getInputProps({
+                                                                        placeholder: 'Search Places...',
+                                                                        className: 'Demo__search-input form-control',
+                                                                    })}
+                                                                />
+                                                            </div>
+                                                            {suggestions.length > 0 && (
+                                                                <div className="Demo__autocomplete-container" >
+                                                                    {suggestions.map(suggestion => {
+                                                                        const className = 'Demo__suggestion-item';
+
+                                                                        return (
+                                                                            /* eslint-disable react/jsx-key */
+                                                                            <div
+                                                                                {...getSuggestionItemProps(suggestion, { className })}
+                                                                            >
+                                                                                <strong>
+                                                                                    {suggestion.formattedSuggestion.mainText}
+                                                                                </strong>{' '}
+                                                                                <small>
+                                                                                    {suggestion.formattedSuggestion.secondaryText}
+                                                                                </small>
+                                                                            </div>
+                                                                        );
+                                                                        /* eslint-enable react/jsx-key */
+                                                                    })}
+                                                                    <div className="Demo__dropdown-footer">
+                                                                        <div>
+                                                                            <img width="100"
+                                                                                 src={'./powered_by_google_default.png'}
+                                                                                 className="Demo__dropdown-footer-image"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }}
+                                            </PlacesAutocomplete>
                                         </Form.Group>
                                     </Col>
                                     <Col md="auto" >
@@ -241,7 +310,75 @@ class Search extends Component {
                                     </Col>
                                     <Col>
                                         <Form.Group controlId={`venue${index}_location`}>
-                                        <Form.Control placeholder="Address Location" onChange={this.onChangeVenueLocation(index)} value={input.location}/>
+                                            <PlacesAutocomplete
+                                                onChange={value => {
+                                                    this.state.venueInputs[index].location = value;
+                                                    this.forceUpdate();
+                                                    this.setState({
+                                                        latitude: null,
+                                                        longitude: null,
+                                                        errorMessage: '',
+                                                    });
+                                                }}
+                                                value={input.location}
+                                                onSelect={async (address)=>{
+                                                    var loc = await geocodeByAddress(address);
+                                                    this.state.venueInputs[index].location = loc[0].formatted_address;
+                                                    this.forceUpdate();
+                                                    loc = loc[0].geometry.location;
+                                                    this.state.venueInputs[index].latitude = loc.lat();
+                                                    this.forceUpdate();
+                                                    this.state.venueInputs[index].longitude = loc.lng();
+                                                    this.forceUpdate();
+                                                }}
+                                                onError={this.handleError}
+                                                shouldFetchSuggestions={input.location.length > 2}
+                                            >
+                                                {({ getInputProps, suggestions, getSuggestionItemProps }) => {
+                                                    return (
+                                                        <div className="Demo__search-bar-container">
+                                                            <div className="Demo__search-input-container">
+                                                                <input
+                                                                    {...getInputProps({
+                                                                        placeholder: 'Search Places...',
+                                                                        className: 'Demo__search-input form-control',
+                                                                    })}
+                                                                />
+                                                            </div>
+                                                            {suggestions.length > 0 && (
+                                                                <div className="Demo__autocomplete-container" >
+                                                                    {suggestions.map(suggestion => {
+                                                                        const className = 'Demo__suggestion-item';
+
+                                                                        return (
+                                                                            /* eslint-disable react/jsx-key */
+                                                                            <div
+                                                                                {...getSuggestionItemProps(suggestion, { className })}
+                                                                            >
+                                                                                <strong>
+                                                                                    {suggestion.formattedSuggestion.mainText}
+                                                                                </strong>{' '}
+                                                                                <small>
+                                                                                    {suggestion.formattedSuggestion.secondaryText}
+                                                                                </small>
+                                                                            </div>
+                                                                        );
+                                                                        /* eslint-enable react/jsx-key */
+                                                                    })}
+                                                                    <div className="Demo__dropdown-footer">
+                                                                        <div>
+                                                                            <img width="100"
+                                                                                 src={'./powered_by_google_default.png'}
+                                                                                 className="Demo__dropdown-footer-image"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }}
+                                            </PlacesAutocomplete>
                                         </Form.Group>
                                     </Col>
                                     <Col xs={1}>
@@ -288,12 +425,12 @@ class Search extends Component {
     }
 
     appendPeople() {
-        let newInput = {name:'', address:'',airline_class:0};
+        let newInput = {name:'',longitude:"",latitude: "",location:'',airline_class:0};
         this.setState(prevState => ({peopleInputs: prevState.peopleInputs.concat([newInput])}));
     }
 
     appendVenue() {
-        let newInput = {venue:'', location:''};
+        let newInput = {venue:'', location:'',longitude:"",latitude: ""};
         this.setState(prevState => ({venueInputs: prevState.venueInputs.concat([newInput])}));
     }
 
