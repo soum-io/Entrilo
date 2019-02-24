@@ -73,17 +73,22 @@ class Search extends Component {
 
 
 
-        // var response = await fetch('/api/search', {
-        //     method: 'POST',
-        //     credentials: 'include',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({startDate: this.state.startDate, endDate: this.state.endDate, peopleInputs: this.state.peopleInputs, venueInputs: this.state.venueInputs}),
-        // });
-        // this.props.history.push({pathname:'/results', state:{results:response.toString()}});
-        this.props.history.push({pathname:'/results'});
+        var mikey = await fetch('/api/search', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({startDate: this.state.startDate, endDate: this.state.endDate, peopleInputs: this.state.peopleInputs, venueInputs: this.state.venueInputs}),
+        });
+        if(mikey.ok){
+            var resp = await mikey.json();
+            console.log(resp);
+            this.props.history.push({pathname:'/results', state:{results:resp}});
+        }
+
+        // this.props.history.push({pathname:'/results'});
 
         //this.setState({results:response,redirector:true});
 

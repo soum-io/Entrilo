@@ -28,13 +28,13 @@ class Results extends Component {
     constructor(props) {
         super(props);
         this.state = {
-			peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
-			defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
-			defaultAirport: ["Denver", "Chicago - O'Hare"],
-			defaultTotalCost: ["$12,500", "$18,250"],
+			// peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
+			// defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
+			defaultAirport: ["Denver"],
+			defaultTotalCost: ["$12,500"],
 
-			// peopleNames: [],
-			// defaultLocation: [],
+			peopleNames: [],
+			defaultLocation: [],
 			// defaultAirport: [],
 			// defaultTotalCost: [],
 
@@ -62,23 +62,23 @@ class Results extends Component {
 		// 	}, 500);
 		// }
 
-		// var input_data = JSON.parse(this.props.location.state.results);
-		// console.log(input_data);
-		// var peopleInputs = input_data["peopleInputs"];
-		// var venueInputs = input_data["venueInputs"];
-		// var x = 0;
-		//
-		// for(x = 0; x < peopleInputs.length; x++){
-		// 	this.state.peopleNames.push(peopleInputs[x]["name"]);
-		// 	this.forceUpdate();
-		// }
-		//
-		// for(x = 0; x < venueInputs.length; x++){
-		// 	this.state.defaultLocation.push(venueInputs[x]["location"]);
-		// 	this.forceUpdate();
-		// }
-		//
-		//
+		var input_data = this.props.location.state.results;
+		console.log(input_data);
+
+		var peopleInputs = input_data["peopleInputs"];
+		var venueInputs = input_data["venueInputs"];
+		var x = 0;
+
+		for(x = 0; x < peopleInputs.length; x++){
+			this.state.peopleNames.push(peopleInputs[x]["name"]);
+			this.forceUpdate();
+		}
+
+		for(x = 0; x < venueInputs.length; x++){
+			this.state.defaultLocation.push(venueInputs[x]["location"]);
+			this.forceUpdate();
+		}
+
 
 		var len_report = this.state.defaultLocation.length;
 		console.log("len_report")
