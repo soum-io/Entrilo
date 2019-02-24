@@ -48,7 +48,7 @@ def create_graph(departure_locations, meeting_options, departure_date):
     for airport in home_airports:
         total_people += departure_locations[airport]
 
-    source_node = 'SOURCE'
+    source_node = 'SOURCE_____'
     G.add_node(source_node, demand=total_people)
     node_set.add(source_node)
     total_demand += total_people
@@ -56,7 +56,7 @@ def create_graph(departure_locations, meeting_options, departure_date):
     print(total_demand)
 
     # make last sentinel node
-    dest_node = 'DEST'
+    dest_node = 'DEST_____'
     G.add_node(dest_node, demand=(-2*total_people))
     node_set.add(dest_node)
     total_demand += (-2*total_people)
@@ -91,13 +91,16 @@ def create_graph(departure_locations, meeting_options, departure_date):
                 departure = first_segment['departure']
                 departure_tag = create_node_tag(departure['iataCode'], 'D', full_flight_no)
                 if departure_tag not in node_set:
-                    G.add_node(departure_tag, demand=0)
+                    G.add_node(departure_tag)
                     node_set.add(departure_tag)
 
                 edge_tag = create_edge_tag(airport_tag, departure_tag)
                 if edge_tag not in edge_set:
                     G.add_edge(airport_tag, departure_tag, weight=0)
                     edge_set.add(edge_tag)
+
+                # need to add an edge with the source and dest
+                G.add_edge('SOURCE', airport_tag, weight=0)
                
                 # for the last flight segment, we need to initialize the sentinel nodes (airport codes of conference destinations without flights)
                 # TODO do the same thing that was done above on segments[-1]
@@ -109,18 +112,21 @@ def create_graph(departure_locations, meeting_options, departure_date):
                 arrival = last_segment['arrival']
                 arrival_tag = create_node_tag(arrival['iataCode'], 'A', full_flight_no)
                 if arrival_tag not in node_set:
-                    G.add_node(arrival_tag, demand=0)
+                    G.add_node(arrival_tag)
                     node_set.add(arrival_tag)
 
                 airport_tag = last_segment['arrival']['iataCode']
                 if airport_tag not in node_set:
-                    G.add_node(airport_tag, demand=0)
+                    G.add_node(airport_tag)
                     node_set.add(airport_tag)
 
                 edge_tag = create_edge_tag(arrival_tag, airport_tag)
                 if edge_tag not in edge_set:
-                    G.add_edge(arrival_tag, airport_tag, weight=0)
+                    G.add_edge(arrival_tag, airport_tag)
                     edge_set.add(edge_tag)
+
+                # add edge with dest
+                G.add_edge(airport_tag, 'DEST', weight=0)
 
                 # flight segment is the leg of a flight
                 for flight_segment_big in segments:
@@ -131,13 +137,13 @@ def create_graph(departure_locations, meeting_options, departure_date):
                     departure = flight_segment['departure']
                     departure_tag = create_node_tag(departure['iataCode'], 'D', full_flight_no)
                     if departure_tag not in node_set:
-                        G.add_node(departure_tag, demand=0)
+                        G.add_node(departure_tag)
                         node_set.add(departure_tag)
 
                     arrival = flight_segment['arrival']
                     arrival_tag = create_node_tag(arrival['iataCode'], 'A', full_flight_no)
                     if arrival_tag not in node_set:
-                        G.add_node(arrival_tag, demand=0)
+                        G.add_node(arrival_tag)
                         node_set.add(arrival_tag)
 
                     # create an edge for the flight itself
@@ -153,6 +159,8 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
     print("TOTAL DEMAND! IS ", total_demand)
  
+    print(G.degree(G.nodes()))
+
     return G
 
 def main(departure_locations, meeting_options, departure_date):
@@ -163,7 +171,6 @@ def main(departure_locations, meeting_options, departure_date):
     except ResponseError as error:
         print(error)
     '''
-
 
     G = nx.DiGraph()
     G = create_graph(departure_locations, meeting_options, departure_date)
