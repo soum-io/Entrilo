@@ -132,7 +132,7 @@ class Account extends Component {
 
                     <Form.Group controlId="PeopleComing">
                         <div><Form.Label>Add People</Form.Label></div>
-                        <Button variant="primary" onClick={() => this.appendPeople()}>Add Person</Button>
+                        <Button variant="primary" className="btn-custom" onClick={() => this.appendPeople()}>Add Person</Button>
                         <div id="peopleAdder">
                             {this.state.peopleInputs.map((input, index) =>
                                 <Row key={index}>
@@ -239,7 +239,7 @@ class Account extends Component {
 
                     <Form.Group controlId="DefaultVenues">
                         <div><Form.Label>Add Desired Venues</Form.Label></div>
-                        <Button variant="primary" onClick={() => this.appendVenue()}>Add Venue</Button>
+                        <Button variant="primary" className="btn-custom" onClick={() => this.appendVenue()}>Add Venue</Button>
                         <div id="venueAdder">
                             {this.state.venueInputs.map((input, index) =>
                                 <Row key={index}>
