@@ -6,43 +6,77 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Container from 'react-bootstrap/Container'
-
-
+import { css } from '@emotion/core';
+import { GridLoader } from 'react-spinners';
 import Collapse from 'react-bootstrap/Collapse'
-
 import {Link, withRouter} from "react-router-dom";
+
+
+const override = css`
+	    display: block;
+	    position: fixed;
+	    top: 40%;
+	    left: 50%;
+	    margin-top: -50px;
+	    margin-left: -100px;
+	`;
 
 
 
 class Results extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
+            namesOpen: false,
+            ButtonNames: "Show Names of People Attending",
 
-    state={
-        peopleNames:["Michael Shea", "Jake Bonk", "Kanika"],
-        namesOpen:false,
-        ButtonNames:"Show Names of People Attending",
+            defaultCostOpen: [false],
+            defaultCostNames: ["Show General Cost Breakdown"],
+            defaultAirport: ["Denver"],
+            defaultHotel: ["Shea Hotel"],
+            defaultLocation: ["Shea Venue"],
+            defaultAirportlink: ["#"],
+            defaultHotellink: ["#"],
+            defaultLocationLink: ["#"],
+            defaultTotalCost: ["$12,500"],
+            defaultFlightsCost: ["$8,000"],
+            defaultVenueCost: ["$2,000"],
+            defaultHotelsCost: ["$2,000"],
+            defaultTransportationCost: ["$500"],
+            defaultDepartFlights: [["A123", "B123", "C123"]],
+            defaultDepartFlightsCost: [["$1", "$2", "$3"]],
+            defaultReturnFlights: [["_A123", "_B123", "_C123"]],
+            defaultReturnFlightsCost: [["$4", "$5", "$6"]],
+            defaultCostDetailOpen: [false],
+            defaultCostDetailNames: ["Show Detailed Cost Breakdown"],
+            loading:true
 
-        defaultCostOpen:[false],
-        defaultCostNames:["Show General Cost Breakdown"],
-        defaultAirport:["Denver"],
-        defaultHotel:["Shea Hotel"],
-        defaultLocation:["Shea Venue"],
-        defaultAirportlink:["#"],
-        defaultHotellink:["#"],
-        defaultLocationLink:["#"],
-        defaultTotalCost:["$12,500"],
-        defaultFlightsCost:["$8,000"],
-        defaultVenueCost:["$2,000"],
-        defaultHotelsCost:["$2,000"],
-        defaultTransportationCost:["$500"],
-        defaultDepartFlights: [["A123", "B123","C123"]],
-        defaultDepartFlightsCost: [["$1", "$2","$3"]],
-        defaultReturnFlights: [["_A123", "_B123","_C123"]],
-        defaultReturnFlightsCost: [["$4", "$5","$6"]],
-        defaultCostDetailOpen:[false],
-        defaultCostDetailNames:["Show Detailed Cost Breakdown"],
+        }
+    }
+
+    componentDidMount() {
+        //fetch Data here
+        if (this.state.loading) {
+            this.turnOffLoading = setTimeout(() => {
+                this.setState(() => ({loading: false}))
+            }, 500);
+        }
 
     }
+
     render() {
+        if (this.state.loading) {
+            return (<div className='sweet-loading'>
+                <GridLoader
+            sizeUnit={"px"}
+            size={40}
+            css={override}
+            color={'#123abc'}
+            loading={this.state.loading}
+            />
+            </div> )
+        }
         return (
             <div>
                 <h2> Results <Button className="btn btn-default btn-margin" variant="outline-primary"> <Link to="search">Search Again</Link> </Button> </h2>
@@ -211,6 +245,8 @@ class Results extends Component {
             </div>
         );
     }
+
+
 
     collapseNames(){
         var cur = this.state.namesOpen;
