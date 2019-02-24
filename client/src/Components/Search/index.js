@@ -193,7 +193,7 @@ class Search extends Component {
                                         </Form.Group>
                                     </Col>
                                     <Col xs={1}>
-                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}></Button>
+                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}>X</Button>
                                     </Col>
                                 </Row>)}
                         </div>
