@@ -8,11 +8,11 @@ class NavBarNormal extends Component {
 
     render() {
         this.extComponent = this.props.loggedIn() ?  (<Navbar.Collapse className="justify-content-end">
-            <Nav.Item>
+            <Navbar.Text className="sidePadding">
                 <span className="navbar-text-white">{`Hello, ${this.props.currentUser.company_name}`}</span>
-            </Nav.Item>
-            <Nav.Item>
-                <Link to={'/update'}>
+            </Navbar.Text>
+            <Navbar.Text className="sidePadding">
+                <Link to={'/account'}>
                 <img
                     src="settings.png"
                     width="20"
@@ -21,12 +21,12 @@ class NavBarNormal extends Component {
                     alt="React Bootstrap logo"
                 />
                 </Link>
-            </Nav.Item>
-            <Nav.Item>
+            </Navbar.Text>
+            <Navbar.Text className="sidePadding">
                 <Navbar.Text>
                     <Link to={'/logout'} className="navbar-text-white">Logout</Link>
                 </Navbar.Text>
-            </Nav.Item>
+            </Navbar.Text>
         </Navbar.Collapse>) : (<Navbar.Collapse className="justify-content-end">
             <Navbar.Text>
                 <Link className='navbar-text-white' to="/login">Login</Link>
