@@ -308,6 +308,7 @@ app.get('/api/search', async (req, res) => {
         endpoint_url+=('meeting_options=' + dest_set);
         endpoint_url+=('departure_date' + startDate);
 
+        //TODO: change this hardcoded url to 'endpoint_url' once python script is complete
         https.get('https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?message=HelloWorld', (resp) => {
             let data = '';
             resp.on('data', (chunk) => {
