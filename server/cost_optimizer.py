@@ -252,10 +252,16 @@ def main(departure_locations, meeting_options, departure_date):
 
     print('Best location is ',best_loc)
 
-    return best_loc, mincost
+    response = amadeus.reference_data.locations.get(subType='AIRPORT', keyword = best_loc)
+    city_name = response.data[0]["address"]["cityName"]
+    state_name = response.data[0]["address"]["stateCode"]
+
+    location = city_name + ', ' + state_name
+    print('My location is ', location)
+
+    return location, mincost
 
 #this right here shows the format of the input you should put in
-'''
 def dummy():
     departure_locations = {}
     departure_locations['ORD'] = 5
@@ -270,4 +276,3 @@ def dummy():
     main(departure_locations, meeting_options, departure_date)
 
 dummy()
-'''
