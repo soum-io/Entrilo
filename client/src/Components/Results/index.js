@@ -113,7 +113,7 @@ class Results extends Component {
                                 {this.state.defaultTotalCost[index]}
                                 </Col>
                             </Row>
-                            <Row>
+                            <Row c>
                             <Col md="auto">
                             <Button  className="btn btn-default btn-height" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
                             <Collapse in={this.state.defaultCostOpen[index]}>
@@ -156,7 +156,7 @@ class Results extends Component {
                             </Collapse>
                             </Col>
                             </Row>
-                            <Row>
+                            <Row >
                             <Col md="auto">
                             <Button  className="btn btn-default btn-height" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
                             <Collapse in={this.state.defaultCostDetailOpen[index]}>
