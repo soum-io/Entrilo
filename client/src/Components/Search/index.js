@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col'
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {Link, withRouter} from "react-router-dom";
 
 
 class Search extends Component {
@@ -54,19 +55,13 @@ class Search extends Component {
 
 
                     <Form.Group controlId="PeopleComing">
-                        <div><Form.Label>Add People</Form.Label></div>
-                        <Button variant="primary" onClick={() => this.appendPeople()}>Add Person</Button>
+                        <Button variant="primary"  className="btn btn-default btn-custom" onClick={() => this.appendPeople()}>Add Person</Button>
                         <div id="peopleAdder">
                             {this.state.peopleInputs.map((input, index) =>
                                 <Row key={index}>
                                     <Col>
-                                        <Form.Group controlId={`person${index}_first`}>
-                                        <Form.Control placeholder="First name" onChange={this.onChangeFirst(index)} value={input.first}/>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group controlId={`person${index}_last`}>
-                                        <Form.Control placeholder="Last name" onChange={this.onChangeLast(index)} value={input.last}/>
+                                        <Form.Group controlId={`person${index}_name`}>
+                                        <Form.Control placeholder="Full Name" onChange={this.onChangeFirst(index)} value={input.first}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
@@ -74,9 +69,12 @@ class Search extends Component {
                                         <Form.Control placeholder="Address Location" onChange={this.onChangeAddress(index)} value={input.address}/>
                                         </Form.Group>
                                     </Col>
+                                    <Col xs={1.5}>
+                                        <Form.Label> Travel Class: </Form.Label>
+                                    </Col>
                                     <Col>
                                         <Form.Group controlId={`person${index}_ac`}>
-                                        <Form.Control as='select' onChange={this.onChangeAC(index)} value={input.ac}>
+                                        <Form.Control as='select' onChange={this.onChangeAC(index)} value={input.ac} >
                                             {/*<Dropdown.Toggle variant="success" id="dropdown-basic">*/}
                                                 {/*Default Airplane Class*/}
                                             {/*</Dropdown.Toggle>*/}
@@ -87,8 +85,7 @@ class Search extends Component {
                                                 {/*<Dropdown.Item >First</Dropdown.Item>*/}
                                             {/*</Dropdown.Menu>*/}
                                             <option>Economy</option>
-                                            <option>Premium</option>
-                                            <option>First</option>
+                                            <option>Business</option>
                                         </Form.Control>
                                         </Form.Group>
                                     </Col>
@@ -100,8 +97,7 @@ class Search extends Component {
                     </Form.Group>
 
                     <Form.Group controlId="DefaultVenues">
-                        <div><Form.Label>Add Desired Venues</Form.Label></div>
-                        <Button variant="primary" onClick={() => this.appendVenue()}>Add Venue</Button>
+                        <Button variant="primary"  className="btn btn-default btn-custom" onClick={() => this.appendVenue()}>Add Venue</Button>
                         <div id="venueAdder">
                             {this.state.venueInputs.map((input, index) =>
                                 <Row key={index}>
@@ -144,8 +140,8 @@ class Search extends Component {
                     </Form.Group>
 
 
-                    <Button variant="primary" type="submit">
-                        Submit
+                    <Button variant="outline-primary" type="submit">
+                        <Link to="results">Results</Link>
                     </Button>
                 </Form>
             </div>

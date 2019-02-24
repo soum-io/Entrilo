@@ -3,8 +3,8 @@ import './index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import SnackBar from 'material-ui/Snackbar';
 import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 
 
 class Login extends Component {
@@ -13,12 +13,13 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
-            responseToPost: ''
+            redirector: false
         }
     }
 
     handleSubmit = async e => {
         e.preventDefault();
+        console.log(this.state);
         const response = await fetch('/api/login', {
             method: 'POST',
             credentials: 'include',
@@ -30,8 +31,7 @@ class Login extends Component {
         });
         if(response.ok){
             const resJson = await response.json();
-            console.log(resJson);
-            this.props.onLogin(resJson);
+            this.setState({redirector:true}, this.props.onLogin(resJson))
         }else{
             this.setState({error:"Unable to successfully login"});
             setTimeout(()=>{
@@ -43,7 +43,8 @@ class Login extends Component {
     };
 
     render() {
-        return (
+
+        return this.state.redirector ? <Redirect to={'/search'}/> : (
             <div>
                 <MuiThemeProvider>
                     <div>

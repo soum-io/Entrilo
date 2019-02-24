@@ -7,40 +7,31 @@ import Nav from "react-bootstrap/Nav";
 class NavBarNormal extends Component {
 
     render() {
-        switch (this.props.location.pathname) {
-            case '/login':
-                this.extComponent =
-                    (<Navbar.Collapse className="justify-content-end">
-                        <Navbar.Text>
-                            <Link to="login">Login</Link>
-                        </Navbar.Text>
-                    </Navbar.Collapse>);
-                break;
-            case '/logout':
-                this.extComponent =
-                    (<Navbar.Collapse className="justify-content-end">
-                        <Nav.Item>
-                            <span className="navbar-text-white"> Hello, Mike. </span>
-                        </Nav.Item>
-                        <Nav.Link>
-                            <img
-                                src="settings.png"
-                                width="20"
-                                height="20"
-                                className="d-inline-block align-top"
-                                alt="React Bootstrap logo"
-                            />
-                        </Nav.Link>
-                        <Nav.Link>
-                            <Navbar.Text>
-                                <Link to="#login" className="navbar-text-white">Logout</Link>
-                            </Navbar.Text>
-                        </Nav.Link>
-                    </Navbar.Collapse>);
-                break;
-            default:
-                this.extComponent = null;
-        }
+        this.extComponent = this.props.loggedIn() ?  (<Navbar.Collapse className="justify-content-end">
+            <Navbar.Text className="sidePadding">
+                <span className="navbar-text-white">{`Hello, ${this.props.currentUser.company_name}`}</span>
+            </Navbar.Text>
+            <Navbar.Text className="sidePadding">
+                <Link to={'/account'}>
+                <img
+                    src="settings.png"
+                    width="20"
+                    height="20"
+                    className="d-inline-block align-top"
+                    alt="React Bootstrap logo"
+                />
+                </Link>
+            </Navbar.Text>
+            <Navbar.Text className="sidePadding">
+                <Navbar.Text>
+                    <Link to={'/logout'} className="navbar-text-white">Logout</Link>
+                </Navbar.Text>
+            </Navbar.Text>
+        </Navbar.Collapse>) : (<Navbar.Collapse className="justify-content-end">
+            <Navbar.Text>
+                <Link className='navbar-text-white' to="/login">Login</Link>
+            </Navbar.Text>
+        </Navbar.Collapse>);
 
         return (
             <Navbar bg="dark">
