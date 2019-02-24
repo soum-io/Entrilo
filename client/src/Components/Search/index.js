@@ -46,7 +46,7 @@ class Search extends Component {
 
     render() {
         return (
-            <div>
+            <div className = "searchDiv">
                 <Form>
                     <Form.Group controlId="tripName">
                         <Form.Label>Trip Name</Form.Label>
@@ -70,7 +70,7 @@ class Search extends Component {
                                         </Form.Group>
                                     </Col>
                                     <Col xs={1.5}>
-                                        <Form.Label> Travel Class: </Form.Label>
+                                        <Form.Label id="classLabel"> Travel Class: </Form.Label>
                                     </Col>
                                     <Col>
                                         <Form.Group controlId={`person${index}_ac`}>
@@ -118,26 +118,30 @@ class Search extends Component {
                         </div>
                     </Form.Group>
 
-
-                    <Form.Group controlId="startDate">
-                        <Form.Label>Trip Start Date</Form.Label>
-                        <div>
-                            <DatePicker
-                                selected={this.state.startDate}
-                                onChange={this.handleChangeStart}
-                            />
-                        </div>
-                    </Form.Group>
-
-                    <Form.Group controlId="endDate">
-                        <Form.Label>Trip End Date</Form.Label>
-                        <div>
-                            <DatePicker
-                                selected={this.state.endDate}
-                                onChange={this.handleChangeEnd}
-                            />
-                        </div>
-                    </Form.Group>
+                    <Row>
+                        <Col md="auto">
+                            <Form.Group controlId="startDate">
+                                <Form.Label>Trip Start Date</Form.Label>
+                                <div>
+                                    <DatePicker
+                                        selected={this.state.startDate}
+                                        onChange={this.handleChangeStart}
+                                    />
+                                </div>
+                            </Form.Group>
+                        </Col>
+                        <Col md="auto">
+                            <Form.Group controlId="endDate">
+                                <Form.Label>Trip End Date</Form.Label>
+                                <div>
+                                    <DatePicker
+                                        selected={this.state.endDate}
+                                        onChange={this.handleChangeEnd}
+                                    />
+                                </div>
+                            </Form.Group>
+                        </Col>
+                    </Row>
 
 
                     <Button variant="outline-primary" type="submit">
