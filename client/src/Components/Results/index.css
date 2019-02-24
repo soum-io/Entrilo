@@ -4,6 +4,13 @@
   /* width:550px; */
 }
 
+.borderMe {
+    border: 2px solid Blue;
+    border-radius: 5px;
+    padding:30px;
+    margin: 20px;
+}
+
 .btn-height {
     padding: 4px 8px 4px 8px;
     margin-bottom: 10px;
@@ -44,4 +51,8 @@ th, td {
   padding: 15px;
   font-size: 10pt;
   text-align: center;
+}
+
+.row {
+    margin-left: 0px;
 }

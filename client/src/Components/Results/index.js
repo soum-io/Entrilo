@@ -142,78 +142,116 @@ class Results extends Component {
                 <div id="defaultResults">
                 <Form>
                     {this.state.defaultLocation.map((input, index) =>
-						<Row>
-						<Col>
-	                        <Form.Group className="singleResult">
-									<Row className="justify-content-md-center">
-										<Col md="auto">
-											Cheapest Flight Information From Amadeus
-										</Col>
-									</Row>
-									<table>
-		                            <tr>
-		                                <th>
-		                                Meeting Location:
-		                                </th>
-		                                <td>
-		                             		{this.state.defaultLocation[index]}
-		                                </td>
-		                            </tr>
-		                            <tr>
-		                                <th >
-		                                    Destination Airport:
-		                                </th>
-		                                <td>
-		                                    {this.state.defaultAirport[index]}
-		                                </td>
-		                            </tr>
-		                            <tr>
-		                                <th>
-		                                Total Roundtrip Flight Cost:
-		                                </th>
-		                                <td>
-		                                {this.state.defaultTotalCost[index]}
-		                                </td>
-		                            </tr>
-									</table>
-	                        </Form.Group>
-						</Col>
-
-						<Col md = "auto">
-							<Form.Group className="singleResult">
+						<Row className="justify-content-md-center">
+							<Col className = "borderMe" md="auto">
 								<Row className="justify-content-md-center">
-									<Col md="auto">
-										Top Yelp Results For Venues Near Here
-									</Col>
+			                        <Form.Group className="singleResult">
+											<Row className="justify-content-md-center">
+												<Col md="auto">
+													Cheapest Flight Information From Amadeus
+												</Col>
+											</Row>
+											<table>
+				                            <tr>
+				                                <th>
+				                                Meeting Location:
+				                                </th>
+				                                <td>
+				                             		{this.state.defaultLocation[index]}
+				                                </td>
+				                            </tr>
+				                            <tr>
+				                                <th >
+				                                    Destination Airport:
+				                                </th>
+				                                <td>
+				                                    {this.state.defaultAirport[index]}
+				                                </td>
+				                            </tr>
+				                            <tr>
+				                                <th>
+				                                Total Roundtrip Flight Cost:
+				                                </th>
+				                                <td>
+				                                {this.state.defaultTotalCost[index]}
+				                                </td>
+				                            </tr>
+											</table>
+			                        </Form.Group>
 								</Row>
-								<table>
-									<tr>
-				   					 <th>
-				   						 Venue Name
-				   					 </th>
-				   					 <th>
-				   						 Address
-				   					 </th>
-				   					 <th>
-				   						 Yelp Price
-				   					 </th>
-				   				 </tr>
-				   				 {this.state.venueData[index].map((_, yelpIdx) =>
-				   					 <tr>
-				   						 <td>
-				   						 	{this.state.venueData[index][yelpIdx][0]}
-				   						 </td>
-				   						 <td>
-				   						 	{this.state.venueData[index][yelpIdx][1]}
-				   						 </td>
-				   						 <td>
-				   							{this.state.venueData[index][yelpIdx][2]}
-				   						 </td>
-				   					 </tr>
-								 )}
-								</table>
-							</Form.Group>
-						</Col>
+
+								<Row className="justify-content-md-center">
+									<Form.Group className="singleResult">
+										<Row className="justify-content-md-center">
+											<Col md="auto">
+												Top Yelp Results For Venues Near Here
+											</Col>
+										</Row>
+										<table>
+											<tr>
+						   					 <th>
+						   						 Venue Name
+						   					 </th>
+						   					 <th>
+						   						 Address
+						   					 </th>
+						   					 <th>
+						   						 Yelp Price
+						   					 </th>
+						   				 </tr>
+						   				 {this.state.venueData[index].map((_, yelpIdx) =>
+						   					 <tr>
+						   						 <td>
+						   						 	{this.state.venueData[index][yelpIdx][0]}
+						   						 </td>
+						   						 <td>
+						   						 	{this.state.venueData[index][yelpIdx][1]}
+						   						 </td>
+						   						 <td>
+						   							{this.state.venueData[index][yelpIdx][2]}
+						   						 </td>
+						   					 </tr>
+										 )}
+										</table>
+									</Form.Group>
+								</Row>
+
+								<Row className="justify-content-md-center">
+									<Form.Group className="singleResult">
+										<Row className="justify-content-md-center">
+											<Col md="auto">
+												Top Yelp Results For Hotels Near Here
+											</Col>
+										</Row>
+										<table>
+											<tr>
+						   					 <th>
+						   						 Hotel Name
+						   					 </th>
+						   					 <th>
+						   						 Address
+						   					 </th>
+						   					 <th>
+						   						 Yelp Price
+						   					 </th>
+						   				 </tr>
+						   				 {this.state.venueData[index].map((_, yelpIdx) =>
+						   					 <tr>
+						   						 <td>
+						   						 	{this.state.hotelData[index][yelpIdx][0]}
+						   						 </td>
+						   						 <td>
+						   						 	{this.state.hotelData[index][yelpIdx][1]}
+						   						 </td>
+						   						 <td>
+						   							{this.state.hotelData[index][yelpIdx][2]}
+						   						 </td>
+						   					 </tr>
+										 )}
+										</table>
+									</Form.Group>
+								</Row>
+							</Col>
 						</Row>
                     )}
                 </Form>
@@ -222,41 +260,6 @@ class Results extends Component {
         );
     }
 
-	showYelp(index){
-		if(!this.state.isYelpLoaded.every( v => v === true )){
-			return;
-		} else {
-			console.log("hereee")
-			 return (
-				 <span>
-				 <tr>
-					 <th>
-						 Venue Name
-					 </th>
-					 <th>
-						 Address
-					 </th>
-					 <th>
-						 Yelp Price
-					 </th>
-				 </tr>
-				 {this.state.items[index]["businesses"].map((_, yelpIdx) =>
-					 <tr>
-						 <td>
-						 	{this.state.items[index]["businesses"][yelpIdx]["name"]}
-						 </td>
-						 <td>
-						 	{this.state.items[index]["businesses"][yelpIdx]["location"]["address1"]}
-						 </td>
-						 <td>
-							{this.state.items[index]["businesses"][yelpIdx]["price"]}
-						 </td>
-					 </tr>
-			 	 )}
-				 </span>
-			 );
-		}
-    }
 
     collapseNames(){
         var cur = this.state.namesOpen;
