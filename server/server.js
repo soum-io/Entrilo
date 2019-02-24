@@ -8,6 +8,7 @@ const config = require('./config');
 const utils = require('./utils');
 const https = require('https');
 const app = express();
+const Amadeus = require('amadeus');
 const port = process.env.PORT || 5000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,6 +23,11 @@ app.use(require('express-session')({ secret: 'thequickbrownfoxjumpsoversomething
 // session.
 app.use(passport.initialize());
 app.use(passport.session());
+
+var amadeus = new Amadeus({
+    clientId: config.clientId,
+    clientSecret: config.clientSecret,
+});
 
 var MongoClient = require('mongodb').MongoClient;
 
@@ -56,7 +62,7 @@ passport.deserializeUser(function(user, cb) {
 });
 
 app.get('/yelp',function (req, res) {
-    axios.get('https://api.yelp.com/v3/businesses/search?limit=3&location='+req.query.location,{
+    axios.get('https://api.yelp.com/v3/businesses/search?limit=3&categories=venues&location='+req.query.location,{
         headers:{
             'Authorization': 'Bearer hGly48lgeqWTCo_lvHZYzvpNmoyuvK-awoGpsF5kWzr_loJYaD0wKDogWo171o-sWX1bzhRkNdVDmXndguWNt_DCV23DpSN4XVLgzUj7XntW1Go_55YPtQeDK-hwXHYx',
         },
@@ -69,6 +75,40 @@ app.get('/yelp',function (req, res) {
         }
     );
 });
+
+app.get('/yelp2',function (req, res) {
+    axios.get('https://api.yelp.com/v3/businesses/search?limit=3&categories=hotels&location='+req.query.location,{
+        headers:{
+            'Authorization': 'Bearer hGly48lgeqWTCo_lvHZYzvpNmoyuvK-awoGpsF5kWzr_loJYaD0wKDogWo171o-sWX1bzhRkNdVDmXndguWNt_DCV23DpSN4XVLgzUj7XntW1Go_55YPtQeDK-hwXHYx',
+        },
+    }).then((response) => {
+            var response = response.data;
+            res.send(response);
+        },
+        (error) => {
+            var status = error.response.status
+        }
+    );
+});
+
+app.get('/api/destination', async  function(req,res){
+    var data = await amadeus.shopping.flightDestinations.get({
+        origin : req.query.origin
+    });
+    data = await JSON.parse(data.body);
+    res.send(data.data[0]);
+});
+
+app.get('/api/airport',async function (req,res) {
+    // Airport Nearest Relevant Airport (for London)
+    var data = await amadeus.referenceData.locations.airports.get({
+        longitude : parseFloat(req.query.lng),
+        latitude  : parseFloat(req.query.lat)
+    });
+    data = await JSON.parse(data.body);
+    res.send(data["data"][0]);
+});
+
 
 app.get('/api/account',
     function(req, res) {

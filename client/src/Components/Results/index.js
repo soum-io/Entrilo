@@ -10,6 +10,7 @@ import { css } from '@emotion/core';
 import { GridLoader } from 'react-spinners';
 import Collapse from 'react-bootstrap/Collapse'
 import {Link, withRouter} from "react-router-dom";
+import update from 'react-addons-update';
 
 
 const override = css`
@@ -31,55 +32,64 @@ class Results extends Component {
             namesOpen: false,
             ButtonNames: "Show Names of People Attending",
 
-            defaultCostOpen: [false, false],
-            defaultCostNames: ["Show General Cost Breakdown", "Show General Cost Breakdown"],
             defaultAirport: ["Denver", "Denver"],
-            defaultHotel: ["Shea Hotel", "Shea Hotel"],
             defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
-            defaultAirportlink: ["#", "#"],
-            defaultHotellink: ["#", "#"],
-            defaultLocationLink: ["#", "#"],
             defaultTotalCost: ["$12,500", "$12,500"],
-            defaultFlightsCost: ["$8,000", "$8,000"],
-            defaultVenueCost: ["$2,000", "$2,000"],
-            defaultHotelsCost: ["$2,000", "$2,000"],
-            defaultTransportationCost: ["$500", "$500"],
-            defaultDepartFlights: [["A123", "B123", "C123"], ["A123", "B123", "C123"]],
-            defaultDepartFlightsCost: [["$1", "$2", "$3"], ["$1", "$2", "$3"]],
-            defaultReturnFlights: [["_A123", "_B123", "_C123"], ["_A123", "_B123", "_C123"]],
-            defaultReturnFlightsCost: [["$4", "$5", "$6"], ["$4", "$5", "$6"]],
-            defaultCostDetailOpen: [false, false],
-            defaultCostDetailNames: ["Show Detailed Cost Breakdown", "Show Detailed Cost Breakdown"],
             loading:true,
-
+			venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
+			hotelData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
 			all_results_loaded:true,
-			isYelpLoaded: [false, false],
-			items:[[], []],
+			isYelpLoaded: [false, false], // for venues
+			isYelpLoaded2: [false, false], // for hotels
+
+			allYelpLoaded:false
         }
     }
 
     componentDidMount() {
-        //fetch Data here
-        if (this.state.loading) {
-            this.turnOffLoading = setTimeout(() => {
-                this.setState(() => ({loading: false}))
-            }, 500);
-        }
+		// fetch Data here
+		if (this.state.loading) {
+			this.turnOffLoading = setTimeout(() => {
+				this.setState(() => ({loading: false}))
+			}, 500);
+		}
 
 		if(this.state.all_results_loaded){
-			this.state.defaultCostOpen.map((_, index) => {
+			this.state.defaultLocation.map((_, index) => {
 				fetch("/yelp?location="+this.state.defaultLocation[index],{method: 'GET'})
 				.then(res=> res.json()).then(json => {
-
-						this.state.items[index] = json;
-						this.forceUpdate();
 						this.state.isYelpLoaded[index] = true;
 						this.forceUpdate();
-						console.log(json);
-						console.log(this.state.defaultLocation[index]);
+						this.state.venueData[index].map((__, yelpIdx) => {
+							this.state.venueData[index][yelpIdx][0] = json["businesses"][yelpIdx]["name"];
+							this.forceUpdate();
+							this.state.venueData[index][yelpIdx][1] = json["businesses"][yelpIdx]["location"]["address1"];
+							this.forceUpdate();
+							this.state.venueData[index][yelpIdx][2] = json["businesses"][yelpIdx]["price"];
+							this.forceUpdate();
+						})
 					});
 			})
 		}
+
+		if(this.state.all_results_loaded){
+			this.state.defaultLocation.map((_, index) => {
+				fetch("/yelp2?location="+this.state.defaultLocation[index],{method: 'GET'})
+				.then(res=> res.json()).then(json => {
+						this.state.isYelpLoaded2[index] = true;
+						this.forceUpdate();
+						this.state.hotelData[index].map((__, yelpIdx) => {
+							this.state.hotelData[index][yelpIdx][0] = json["businesses"][yelpIdx]["name"];
+							this.forceUpdate();
+							this.state.hotelData[index][yelpIdx][1] = json["businesses"][yelpIdx]["location"]["address1"];
+							this.forceUpdate();
+							this.state.hotelData[index][yelpIdx][2] = json["businesses"][yelpIdx]["price"];
+							this.forceUpdate();
+						})
+					});
+			})
+		}
+
     }
 
     render() {
@@ -94,6 +104,7 @@ class Results extends Component {
             />
             </div> )
         }
+
         return (
             <div>
                 <h2> Results <Button className="btn btn-default btn-margin" variant="outline-primary"> <Link to="search">Search Again</Link> </Button> </h2>
@@ -130,149 +141,117 @@ class Results extends Component {
 
                 <div id="defaultResults">
                 <Form>
-                    {this.state.defaultCostOpen.map((input, index) =>
-						<Row>
-						<Col>
-	                        <Form.Group className="singleResult">
-									<table>
-		                            <tr>
-		                                <th>
-		                                Provided Location:
-		                                </th>
-		                                <td>
-		                                <a href="#">{this.state.defaultLocation[index]}</a>
-		                                </td>
-		                            </tr>
-		                            <tr>
-		                                <th >
-		                                    Destination Airport:
-		                                </th>
-		                                <td>
-		                                    <a href="#" > {this.state.defaultAirport[index]} </a>
-		                                </td>
-		                            </tr>
-		                            <tr>
-		                                <th>
-		                                Hotel Name:
-		                                </th>
-		                                <td>
-		                                <a href="#">{this.state.defaultHotel[index]}</a>
-		                                </td>
-		                            </tr>
-		                            <tr>
-		                                <th>
-		                                Total Cost:
-		                                </th>
-		                                <td>
-		                                {this.state.defaultTotalCost[index]}
-		                                </td>
-		                            </tr>
-									</table>
-		                            <table>
-									<Row>
-		                            <Col md="auto">
-		                            <Button  size="xs" className="btn btn-default show-cost" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
-									<Button  size="xs" className="btn btn-default show-cost" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
-		                            <Collapse in={this.state.defaultCostDetailOpen[index]}>
-		                                <Form.Group  controlId="peopleOnTrip">
-		                                    <table>
-		                                    <tr>
-		                                        <th>
-		                                        Name
-		                                        </th>
-		                                        <th>
-		                                        Depart Flight
-		                                        </th>
-		                                        <th>
-		                                        Depart Flight Cost
-		                                        </th>
-		                                        <th>
-		                                        Return Flight
-		                                        </th>
-		                                        <th>
-		                                        Return Flight Cost
-		                                        </th>
-		                                    </tr>
-		                                    {this.state.defaultDepartFlights[index].map((_, inner_idx) =>
-		                                            <tr>
-		                                                <td>
-		                                                    {this.state.peopleNames[inner_idx]}
-		                                                </td>
-		                                                <td>
-		                                                    {this.state.defaultDepartFlights[index][inner_idx]}
-		                                                </td>
-		                                                <td>
-		                                                    {this.state.defaultDepartFlightsCost[index][inner_idx]}
-		                                                </td>
-		                                                <td>
-		                                                    {this.state.defaultReturnFlights[index][inner_idx]}
-		                                                </td>
-		                                                <td>
-		                                                    {this.state.defaultReturnFlightsCost[index][inner_idx]}
-		                                                </td>
-		                                            </tr>
-		                                    )}
-		                                    </table>
-		                                </Form.Group>
-		                            </Collapse>
-		                            <Collapse in={this.state.defaultCostOpen[index]}>
-			                            <Form.Group  controlId="peopleOnTrip">
-			                            <table>
-			                                    <tr>
-			                                        <th>
-			                                        Flights:
-			                                        </th>
-			                                        <td>
-			                                        {this.state.defaultFlightsCost[index]}
-			                                        </td>
-			                                    </tr>
-			                                    <tr>
-			                                        <th>
-			                                        Venue:
-			                                        </th>
-			                                        <td>
-			                                        {this.state.defaultVenueCost[index]}
-			                                        </td>
-			                                    </tr>
-			                                    <tr>
-			                                        <th>
-			                                        Hotels:
-			                                        </th>
-			                                        <td>
-			                                        {this.state.defaultHotelsCost[index]}
-			                                        </td>
-			                                    </tr>
-			                                    <tr>
-			                                        <th>
-			                                        Transportation:
-			                                        </th>
-			                                        <td>
-			                                        {this.state.defaultTransportationCost[index]}
-			                                        </td>
-			                                    </tr>
-			                            </table>
-			                            </Form.Group>
-		                            </Collapse>
-		                            </Col>
-									</Row>
-		                            </table>
-	                        </Form.Group>
-						</Col>
-
-						<Col md = "auto">
-							<Form.Group className="singleResult">
+                    {this.state.defaultLocation.map((input, index) =>
+						<Row className="justify-content-md-center">
+							<Col className = "borderMe" md="auto">
 								<Row className="justify-content-md-center">
-									<Col md="auto">
-										Top Yelp Results For Hotels Near Here
-									</Col>
+			                        <Form.Group className="singleResult">
+											<Row className="justify-content-md-center">
+												<Col md="auto">
+													Cheapest Flight Information From Amadeus
+												</Col>
+											</Row>
+											<table>
+				                            <tr>
+				                                <th>
+				                                Meeting Location:
+				                                </th>
+				                                <td>
+				                             		{this.state.defaultLocation[index]}
+				                                </td>
+				                            </tr>
+				                            <tr>
+				                                <th >
+				                                    Destination Airport:
+				                                </th>
+				                                <td>
+				                                    {this.state.defaultAirport[index]}
+				                                </td>
+				                            </tr>
+				                            <tr>
+				                                <th>
+				                                Total Roundtrip Flight Cost:
+				                                </th>
+				                                <td>
+				                                {this.state.defaultTotalCost[index]}
+				                                </td>
+				                            </tr>
+											</table>
+			                        </Form.Group>
 								</Row>
-								<table>
-								<Collapse in={this.state.isYelpLoaded[index]}>
-										{this.showYelp(index)}
-								</Collapse>
-								</table>
-							</Form.Group>
-						</Col>
+
+								<Row className="justify-content-md-center">
+									<Form.Group className="singleResult">
+										<Row className="justify-content-md-center">
+											<Col md="auto">
+												Top Yelp Results For Venues Near Here
+											</Col>
+										</Row>
+										<table>
+											<tr>
+						   					 <th>
+						   						 Venue Name
+						   					 </th>
+						   					 <th>
+						   						 Address
+						   					 </th>
+						   					 <th>
+						   						 Yelp Price
+						   					 </th>
+						   				 </tr>
+						   				 {this.state.venueData[index].map((_, yelpIdx) =>
+						   					 <tr>
+						   						 <td>
+						   						 	{this.state.venueData[index][yelpIdx][0]}
+						   						 </td>
+						   						 <td>
+						   						 	{this.state.venueData[index][yelpIdx][1]}
+						   						 </td>
+						   						 <td>
+						   							{this.state.venueData[index][yelpIdx][2]}
+						   						 </td>
+						   					 </tr>
+										 )}
+										</table>
+									</Form.Group>
+								</Row>
+
+								<Row className="justify-content-md-center">
+									<Form.Group className="singleResult">
+										<Row className="justify-content-md-center">
+											<Col md="auto">
+												Top Yelp Results For Hotels Near Here
+											</Col>
+										</Row>
+										<table>
+											<tr>
+						   					 <th>
+						   						 Hotel Name
+						   					 </th>
+						   					 <th>
+						   						 Address
+						   					 </th>
+						   					 <th>
+						   						 Yelp Price
+						   					 </th>
+						   				 </tr>
+						   				 {this.state.venueData[index].map((_, yelpIdx) =>
+						   					 <tr>
+						   						 <td>
+						   						 	{this.state.hotelData[index][yelpIdx][0]}
+						   						 </td>
+						   						 <td>
+						   						 	{this.state.hotelData[index][yelpIdx][1]}
+						   						 </td>
+						   						 <td>
+						   							{this.state.hotelData[index][yelpIdx][2]}
+						   						 </td>
+						   					 </tr>
+										 )}
+										</table>
+									</Form.Group>
+								</Row>
+							</Col>
 						</Row>
                     )}
                 </Form>
@@ -281,40 +260,6 @@ class Results extends Component {
         );
     }
 
-	showYelp(index){
-		if(!this.state.isYelpLoaded[index]){
-			return;
-		} else {
-			 return (
-				 <span>
-				 <tr>
-					 <th>
-						 Venue Name
-					 </th>
-					 <th>
-						 Address
-					 </th>
-					 <th>
-						 Yelp Price
-					 </th>
-				 </tr>
-				 {this.state.items[index]["businesses"].map((_, yelpIdx) =>
-					 <tr>
-						 <td>
-						 	{this.state.items[index]["businesses"][yelpIdx]["name"]}
-						 </td>
-						 <td>
-						 	{this.state.items[index]["businesses"][yelpIdx]["location"]["address1"]}
-						 </td>
-						 <td>
-							{this.state.items[index]["businesses"][yelpIdx]["price"]}
-						 </td>
-					 </tr>
-			 	 )}
-				 </span>
-			 );
-		}
-    }
 
     collapseNames(){
         var cur = this.state.namesOpen;
@@ -331,39 +276,6 @@ class Results extends Component {
         }
     }
 
-    collapseDefaultCost(index){
-        var cur = this.state.defaultCostOpen[index];
-        if(cur){
-            this.state.defaultCostOpen[index] = false;
-            this.forceUpdate()
-            this.state.defaultCostNames[index] = "Show General Cost Breakdown"
-            this.forceUpdate()
-        } else {
-			this.state.defaultCostDetailOpen[index] = false;
-            this.forceUpdate()
-            this.state.defaultCostOpen[index] = true;
-            this.forceUpdate()
-            this.state.defaultCostNames[index] = "Hide General Cost Breakdown"
-            this.forceUpdate()
-        }
-    }
-
-    collapseDefaultDetailCost(index){
-        var cur = this.state.defaultCostDetailOpen[index];
-        if(cur){
-            this.state.defaultCostDetailOpen[index] = false;
-            this.forceUpdate()
-            this.state.defaultCostDetailNames[index] = "Show Detailed Cost Breakdown"
-            this.forceUpdate()
-        } else {
-			this.state.defaultCostOpen[index] = false;
-            this.forceUpdate()
-            this.state.defaultCostDetailOpen[index] = true;
-            this.forceUpdate()
-            this.state.defaultCostDetailNames[index] = "Hide Detailed Cost Breakdown"
-            this.forceUpdate()
-        }
-    }
 }
 
 

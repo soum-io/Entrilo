@@ -10,6 +10,7 @@
     "emotion": "^10.0.7",
     "material-ui": "^0.20.2",
     "react": "^16.8.3",
+    "react-addons-update": "^15.6.2",
     "react-autocomplete": "^1.8.1",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-bootstrap-date-picker": "^5.1.0",
