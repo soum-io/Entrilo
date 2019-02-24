@@ -22,6 +22,7 @@ In addition, they would no longer have to book their own flights, saving them ti
 
 <h2> Business case </h2>
 Is this *really* saving enough money to be worth using? To find this out, we gathered information on a few companies that HackIllinois workplace attendees worked for or had worked for in the past.
+
 **Company A**: ~100,000 employees, ~100 people per team ~1000 teams spread across different office locations, 1-2 team summits per team per year
 
 1.5 team summits * 1000 teams * 100 people getting moved * AMOUNT_SAVED_PER_PERSON = 150,000 * AMOUNT_SAVED_PER_PERSON
@@ -31,6 +32,7 @@ Let's say we can save ~$50/person.
 150,000 * 50 = $7,500,000 in savings/year.
 
 Realistically, Company A is doing well enough financially that $7,500,000 is going to make or break them. Let's try another company
+
 **Company B**:
 ~300 employees, ~10-20 people per team, ~20 teams, 1-2 team meetings per team per year
 
