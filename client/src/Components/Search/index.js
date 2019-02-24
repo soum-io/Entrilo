@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col'
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {Link, withRouter} from "react-router-dom";
+import {Link, Redirect, withRouter} from "react-router-dom";
 
 
 class Search extends Component {
@@ -18,7 +18,9 @@ class Search extends Component {
             startDate: new Date(),
             endDate: new Date(),
             peopleInputs: [],
-            venueInputs: []
+            venueInputs: [],
+            error: '',
+            redirector:false
         };
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
@@ -44,8 +46,28 @@ class Search extends Component {
         });
     }
 
+    handleSubmit = async e => {
+        e.preventDefault();
+        if (this.state.peopleInputs.length==0 || this.state.venueInputs.length==0){
+            return this.printErrorMessage();
+        }
+        this.setState({redirector:true});
+    };
+
+
+    printErrorMessage = () => {
+        if(this.state.peopleInputs.length==0){
+            this.setState({error: "Please include at least one Employee"});
+            return;
+        }
+        if(this.state.venueInputs.length==0){
+            this.setState({error: "Please include a preferred location"});
+        }
+
+    };
+
     render() {
-        return (
+        return this.state.redirector ? <Redirect to={'/results'}/> : (
             <div className = "searchDiv">
                 <Form>
                  <h2> Search for Your Next Enterprise Trip! </h2>
@@ -113,7 +135,7 @@ class Search extends Component {
                                         </Form.Group>
                                     </Col>
                                     <Col xs={1}>
-                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}>X</Button>
+                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}></Button>
                                     </Col>
                                 </Row>)}
                         </div>
@@ -145,9 +167,11 @@ class Search extends Component {
                     </Row>
 
 
-                    <Button variant="outline-primary" type="submit">
-                        <Link to="results">Results</Link>
+                    <Button variant="outline-primary" type="Results" onClick={(event) => this.handleSubmit(event)}>
+                    Results
                     </Button>
+                     <div>{this.state.error}</div>
+
                 </Form>
             </div>
         );

@@ -104,6 +104,7 @@ app.put('/api/employee/:id',
                 var company = await db.collection("companies").findOneAndUpdate({_id: ObjectID(req.user._id),'employee._id':ObjectID(req.params.id)}, {
                     $set: data,
                 }, {returnOriginal: false});
+                console.log(req.user._id);
                 if (company) {
                     res.send(utils.parseOutPassword(company.value));
                 } else {
@@ -123,7 +124,7 @@ app.delete('/api/employee/:id',
         try{
             var employee_id = req.params.id;
             const db = req.app.locals.db;
-            var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$pull:{employees:{_id:ObjectID(employee_id)}}},{returnOriginal:false});
+            var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$pull:{employee:{_id:ObjectID(employee_id)}}},{returnOriginal:false});
             if(company){
                 res.send(utils.parseOutPassword(company.value));
             }else{
@@ -145,7 +146,7 @@ app.post('/api/employee',
             var location = req.body.location;
             if(utils.validName(name) && !isNaN(parseFloat(longitude)) && !isNaN(parseFloat(latitude)) && utils.validAirlineClass(airline_class) && utils.validLocation(location)){
                 const db = req.app.locals.db;
-                var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$push:{employees:{name:name,airline_class:airline_class,longitude:longitude,location:location,latitude:latitude,_id:ObjectID()}}},{returnOriginal:false});
+                var company = await db.collection("companies").findOneAndUpdate({_id:ObjectID(req.user._id)},{$push:{employee:{name:name,airline_class:airline_class,longitude:longitude,location:location,latitude:latitude,_id:ObjectID()}}},{returnOriginal:false});
                 if(company){
                     res.send(utils.parseOutPassword(company.value));
                 }else{
@@ -253,7 +254,7 @@ app.post('/api/signup', async (req, res) => {
                 res.send({"message":"Company Name or Username already exists"});
             } else {
                 //Sign up the company
-                var user = await db.collection("companies").insertOne({"company_name":company_name,"employees":[],"venue":[],"username":username,"password":utils.hashPassword(password)});
+                var user = await db.collection("companies").insertOne({"company_name":company_name,"employee":[],"venue":[],"username":username,"password":utils.hashPassword(password)});
                 if(user){
                     user = user.ops[0];
                     res.send(utils.parseOutPassword(user));
