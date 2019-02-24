@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import ListGroup from 'react-bootstrap/ListGroup'
+
 import Collapse from 'react-bootstrap/Collapse'
 
 import {Link, withRouter} from "react-router-dom";
@@ -49,7 +51,7 @@ class Results extends Component {
     render() {
         return (
             <div>
-                <Button variant="outline-primary"> <Link to="search">Search Again</Link> </Button>
+                <Button className="btn btn-default btn-margin" variant="outline-primary"> <Link to="search">Search Again</Link> </Button>
 
                 <div>
                     <Row>
@@ -63,14 +65,19 @@ class Results extends Component {
                         <Col md={{offset: 1}}>
                             <Collapse in={this.state.namesOpen}>
                                 <Form.Group  controlId="peopleOnTrip">
-                                    {this.state.peopleNames.map((name, index) =>
-                                        <Row>
-                                            <Col>
-                                            {name}
-                                            </Col>
-                                        </Row>
 
-                                    )}
+                                        <ListGroup>
+                                            {this.state.peopleNames.map((name, index) =>
+                                              <div>
+                                                <Row>
+                                                    <Col sm={4}>
+                                                        <ListGroup.Item as="li">{name}</ListGroup.Item>
+                                                    </Col>
+                                                </Row>
+                                              </div>
+                                            )}
+                                        </ListGroup>
+
                                 </Form.Group>
                             </Collapse>
                         </Col>

@@ -4,7 +4,13 @@
 }
 
 .btn-height {
-    padding: 0% 0;
-    /* define values in pixels / Percentage or em. whatever suits
-       your requirements */
+    padding: 4px 8px 4px 8px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+
+.btn-margin {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
