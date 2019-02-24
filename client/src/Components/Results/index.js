@@ -1,96 +1,57 @@
 import React, {Component} from 'react';
 import './index.css';
-import { css } from '@emotion/core';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import ListGroup from 'react-bootstrap/ListGroup'
+
 import Collapse from 'react-bootstrap/Collapse'
-import { GridLoader } from 'react-spinners';
 
 import {Link, withRouter} from "react-router-dom";
 
 
-const override = css`
-    display: block;
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    margin-top: -50px;
-    margin-left: -100px;
-`;
 
 class Results extends Component {
 
-    constructor(props) {
-        super(props);
+    state={
+        peopleNames:["Michael Shea", "Jake Bonk", "Ma Boi Jake"],
+        namesOpen:false,
+        ButtonNames:"Show Names",
 
-        this.state = {
-            peopleNames: ["Michael Shea", "Jake Bonk", "Ma Boi Jake"],
-            namesOpen: false,
-            ButtonNames: "Show Names",
+        defaultCostOpen:[false],
+        defaultCostNames:["Show Cost Breakdown"],
+        defaultAirport:["Denver"],
+        defaultHotel:["Shea Hotel"],
+        defaultVenue:["Shea Venue"],
+        defaultAirportlink:["#"],
+        defaultHotellink:["#"],
+        defaultVenuelink:["#"],
+        defaultTotalCost:["$12,500"],
+        defaultFlightsCost:["$8,000"],
+        defaultVenueCost:["$2,000"],
+        defaultHotelsCost:["$2,000"],
+        defaultTransportationCost:["$500"],
 
-            defaultCostOpen: [false],
-            defaultCostNames: ["Show Cost Breakdown"],
-            defaultAirport: ["Denver"],
-            defaultHotel: ["Shea Hotel"],
-            defaultVenue: ["Shea Venue"],
-            defaultAirportlink: ["#"],
-            defaultHotellink: ["#"],
-            defaultVenuelink: ["#"],
-            defaultTotalCost: ["$12,500"],
-            defaultFlightsCost: ["$8,000"],
-            defaultVenueCost: ["$2,000"],
-            defaultHotelsCost: ["$2,000"],
-            defaultTransportationCost: ["$500"],
-
-            calculatedCostOpen: [false],
-            calculatedCostNames: ["Show Cost Breakdown"],
-            calculatedAirport: ["O'hare"],
-            calculatedHotel: ["Bonk Hotel"],
-            calculatedVenue: ["Bonk Venue"],
-            calculatedAirportlink: ["#"],
-            calculatedHotellink: ["#"],
-            calculatedVenuelink: ["#"],
-            calculatedTotalCost: ["$16,500"],
-            calculatedFlightsCost: ["$9,000"],
-            calculatedVenueCost: ["$3,000"],
-            calculatedHotelsCost: ["$3,000"],
-            calculatedTransportationCost: ["$1,500"],
-
-            loading: true
-
-        }
-    }
-
-    componentDidMount() {
-        //fetch Data here
-        if (this.state.loading) {
-            this.turnOffLoading = setTimeout(() => {
-                this.setState(() => ({loading: false}))
-            }, 500);
-        }
+        calculatedCostOpen:[false],
+        calculatedCostNames:["Show Cost Breakdown"],
+        calculatedAirport:["O'hare"],
+        calculatedHotel:["Bonk Hotel"],
+        calculatedVenue:["Bonk Venue"],
+        calculatedAirportlink:["#"],
+        calculatedHotellink:["#"],
+        calculatedVenuelink:["#"],
+        calculatedTotalCost:["$16,500"],
+        calculatedFlightsCost:["$9,000"],
+        calculatedVenueCost:["$3,000"],
+        calculatedHotelsCost:["$3,000"],
+        calculatedTransportationCost:["$1,500"]
 
     }
-
-
-
-
     render() {
-        if (this.state.loading) {
-            return (<div className='sweet-loading'>
-                <GridLoader
-                sizeUnit={"px"}
-                size={40}
-                css={override}
-                color={'#123abc'}
-                loading={this.state.loading}
-            />
-            </div> )
-        }
         return (
             <div>
-                <Button variant="outline-primary"> <Link to="search">Search Again</Link> </Button>
+                <Button className="btn btn-default btn-margin" variant="outline-primary"> <Link to="search">Search Again</Link> </Button>
 
                 <div>
                     <Row>
@@ -104,14 +65,19 @@ class Results extends Component {
                         <Col md={{offset: 1}}>
                             <Collapse in={this.state.namesOpen}>
                                 <Form.Group  controlId="peopleOnTrip">
-                                    {this.state.peopleNames.map((name, index) =>
-                                        <Row>
-                                            <Col>
-                                            {name}
-                                            </Col>
-                                        </Row>
 
-                                    )}
+                                        <ListGroup>
+                                            {this.state.peopleNames.map((name, index) =>
+                                              <div>
+                                                <Row>
+                                                    <Col sm={4}>
+                                                        <ListGroup.Item as="li">{name}</ListGroup.Item>
+                                                    </Col>
+                                                </Row>
+                                              </div>
+                                            )}
+                                        </ListGroup>
+
                                 </Form.Group>
                             </Collapse>
                         </Col>

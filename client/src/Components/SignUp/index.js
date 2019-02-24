@@ -5,6 +5,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import './index.css';
 import NavBarNormal from "../nav/NavBarNormal.js"
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 class SignUp extends Component {
     constructor(props){
@@ -45,7 +47,7 @@ class SignUp extends Component {
         return (
             <div>
             <MuiThemeProvider>
-            <div>
+            <div className = "SignUpBox">
                 <TextField
                 hintText="Enter Company"
                 floatingLabelText="Company"
@@ -65,8 +67,13 @@ class SignUp extends Component {
                 onChange = {(event,newValue) => this.setState({password:newValue})}
                 />
                 <br/>
-                <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleSubmit(event)}/>
-                <br/>
+                <Row className="justify-content-md-center">
+                    <Col md="auto">
+                    <RaisedButton label="Sign Up" primary={true} style={style}
+                onClick={(event) => this.handleSubmit(event)}/>
+                </Col>
+                </Row>
+             <br/>
                 <div>{this.state.error}</div>
         </div>
         </MuiThemeProvider>

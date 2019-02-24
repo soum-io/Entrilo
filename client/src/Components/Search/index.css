@@ -31,3 +31,16 @@
     transform: rotate(360deg);
   }
 }
+
+.btn-custom {
+    padding: 4px 8px 4px 8px;
+    margin-bottom: 10px;
+}
+
+#classLabel {
+    padding: 5px;
+}
+
+.searchDiv {
+    padding-top: 10px;
+}

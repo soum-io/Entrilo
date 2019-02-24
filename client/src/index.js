@@ -8,8 +8,8 @@ import NavBarNormal from "./Components/nav/NavBarNormal";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Search from "./Components/Search";
-import Account from "./Components/Search";
 import Results from "./Components/Results";
+import Account from "./Components/Account";
 import Container from "react-bootstrap/es/Container";
 
 const defaultUser = {
