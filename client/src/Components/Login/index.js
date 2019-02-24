@@ -22,6 +22,7 @@ class Login extends Component {
         console.log(this.state);
         const response = await fetch('/api/login', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
