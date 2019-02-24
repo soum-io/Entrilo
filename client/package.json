@@ -8,6 +8,7 @@
     "chroma-js": "^2.0.3",
     "material-ui": "^0.20.2",
     "react": "^16.8.3",
+    "react-autocomplete": "^1.8.1",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-bootstrap-date-picker": "^5.1.0",
     "react-datepicker": "^2.1.0",
