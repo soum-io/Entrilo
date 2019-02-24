@@ -31,6 +31,18 @@ def create_edge_tag(source_node_tag, dest_node_tag):
 
     return tag
 
+def get_leg_price(departure_code, arrival_code, departure_date, carrier_code, flight_no):
+    response = amadeus.shopping.flight_offers.get(origin=departure_code, destination=arrival_code, departureDate=departure_date, nonStop='true')
+    offer_items = response.data
+    for offer_item in offer_items:
+        segment = offer_item['offerItems'][0]['services'][0]['segments'][0]['flightSegment']
+        if segment['carrierCode'] == carrier_code and segment['number'] == flight_no:
+            price = int(float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']))
+            return price
+        else:
+            return 99999
+
+
 # departure_locations is a dict where the key is a airport code and a value is the number of people flying out of that airport 
 # meeting_options is a list of the possible meeting cities as specified by the user
 def create_graph(departure_locations, meeting_options, departure_date):
@@ -53,16 +65,12 @@ def create_graph(departure_locations, meeting_options, departure_date):
     G.add_node(source_node, demand=total_people)
     node_set.add(source_node)
     total_demand += total_people
-    print('SOURCE')
-    print(total_demand)
 
     # make last sentinel node
     dest_node = 'DEST'
     G.add_node(dest_node, demand=(-1*total_people))
     node_set.add(dest_node)
     total_demand += (-1*total_people)
-    print('DEST')
-    print(-1*total_people)
 
     for pair in sd_pairs:
         try:
@@ -178,6 +186,18 @@ def create_graph(departure_locations, meeting_options, departure_date):
                         node_set.add(arrival_tag)
 
                     # create an edge for the flight itself
+                    carrier_code = flight_segment['carrierCode']
+                    flight_no = flight_segment['number']
+
+                    '''
+                    THIS PORTION BELOW IS INCORRECT
+                    print(len(flight_segment_big[0]))
+                    if (len(flight_segment_big[0]) == 2):
+                        price = int(float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']))
+                    else:
+                        price = get_leg_price(departure['iataCode'], arrival['iataCode'], departure_date, carrier_code, flight_no)
+                    '''
+                    
                     price = int(float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']))
 
                     edge_tag = create_edge_tag(departure_tag, arrival_tag)
@@ -206,8 +226,6 @@ def create_graph(departure_locations, meeting_options, departure_date):
         except ResponseError as error:
             print(error)
 
-    print("TOTAL DEMAND! IS ", total_demand)
-
     return G
 
 def main(departure_locations, meeting_options, departure_date):
@@ -233,13 +251,12 @@ def main(departure_locations, meeting_options, departure_date):
 
 def dummy():
     departure_locations = {}
-    departure_locations['CMI'] = 5
-    #departure_locations['MIA'] = 10
-    #departure_locations['AUS'] = 7
+    departure_locations['ORD'] = 5
+    departure_locations['MIA'] = 3
 
     meeting_options = []
     meeting_options.append('SEA')
-    #meeting_options.append('SFO')
+    meeting_options.append('SFO')
 
     departure_date = '2019-08-01'
 
