@@ -73,6 +73,7 @@ class Search extends Component {
             method: 'GET',
             credentials: 'include',
         });
+        //TODO: parse + display results
         if(response.ok){
             const resJson = await response.json();
             this.setState({redirector:true})

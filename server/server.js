@@ -320,6 +320,7 @@ app.get('/api/search', async (req, res) => {
         }).on("error", (err) => {
             console.log("Error");
         });
+        //TODO: parse and return requested info
 
     }catch (e) {
         console.log(e);
