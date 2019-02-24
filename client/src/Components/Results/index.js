@@ -10,6 +10,7 @@ import { css } from '@emotion/core';
 import { GridLoader } from 'react-spinners';
 import Collapse from 'react-bootstrap/Collapse'
 import {Link, withRouter} from "react-router-dom";
+import update from 'react-addons-update';
 
 
 const override = css`
@@ -54,9 +55,17 @@ class Results extends Component {
 
 			all_results_loaded:true,
 			isYelpLoaded: [false, false],
-			items:[[], []],
+			items:[{},{}]
         }
     }
+
+	handleChange = e => {
+		  const {name, value} = e.target;
+
+		  this.setState(() => ({
+			[name]: value
+		  }))
+		}
 
     componentDidMount() {
         //fetch Data here
@@ -70,13 +79,29 @@ class Results extends Component {
 			this.state.defaultCostOpen.map((_, index) => {
 				fetch("/yelp?location="+this.state.defaultLocation[index],{method: 'GET'})
 				.then(res=> res.json()).then(json => {
+						// this.state.items[index] = json;
+						// this.forceUpdate();
+						// this.state.isYelpLoaded[index] = true;
+						// this.forceUpdate();
 
-						this.state.items[index] = json;
-						this.forceUpdate();
-						this.state.isYelpLoaded[index] = true;
-						this.forceUpdate();
-						console.log(json);
-						console.log(this.state.defaultLocation[index]);
+
+
+						this.setState({
+						  isYelpLoaded: update(this.state.isYelpLoaded, {[index] : {$set: true}}),
+						  items: update(this.state.items, {[index] : {$set: json}})
+						})
+						console.log(this.state.isYelpLoaded)
+						console.log(this.state.items)
+
+
+
+						// var isYelpLoaded = this.state.isYelpLoaded;
+						// isYelpLoaded[index] = true;
+						//
+						// var items = this.state.items;
+						// items[index] = json;
+						// this.setState({items: items, isYelpLoaded: isYelpLoaded});
+
 					});
 			})
 		}
