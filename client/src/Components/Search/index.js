@@ -48,6 +48,7 @@ class Search extends Component {
         return (
             <div className = "searchDiv">
                 <Form>
+                 <h2> Search for Your Next Enterprise Trip! </h2>
                     <Form.Group controlId="tripName">
                         <Form.Label>Trip Name</Form.Label>
                         <Form.Control type="input" placeholder=""/>
