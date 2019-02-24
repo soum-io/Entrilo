@@ -63,6 +63,26 @@ class Search extends Component {
             return this.printErrorMessage();
         }
         this.setState({redirector:true});
+        console.log(this.state);
+        var url_string = '/api/search';
+        url_string+=('?startDate=' + this.state.startDate);
+        url_string+=('?endDate=' + this.state.endDate);
+        url_string+=('?peopleInputs=' + this.state.peopleInputs);
+        url_string+=('?venueInputs=' + this.state.venueInputs);
+        const response = await fetch(url_string, {
+            method: 'GET',
+            credentials: 'include',
+        });
+        //TODO: parse + display results
+        if(response.ok){
+            const resJson = await response.json();
+            this.setState({redirector:true})
+        }else{
+            this.setState({error:"Unable to successfully login"});
+            setTimeout(()=>{
+                this.setState({error:''})
+            }, 5000);
+        }
     };
 
 

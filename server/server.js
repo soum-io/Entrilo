@@ -2,8 +2,10 @@ const express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 const bodyParser = require('body-parser');
+const axios = require('axios');
 const config = require('./config');
 const utils = require('./utils');
+const https = require('https');
 const app = express();
 const port = process.env.PORT || 5000;
 app.use(bodyParser.json());
@@ -50,6 +52,27 @@ passport.deserializeUser(function(user, cb) {
         if (err) { return cb(err); }
         cb(null, utils.parseOutPassword(user));
     });
+});
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+app.get('/yelp',function (req, res) {
+    axios.get('https://api.yelp.com/v3/businesses/search?limit=3&categories=venues&location='+req.params.location,{
+        headers:{
+            'Authorization': 'Bearer hGly48lgeqWTCo_lvHZYzvpNmoyuvK-awoGpsF5kWzr_loJYaD0wKDogWo171o-sWX1bzhRkNdVDmXndguWNt_DCV23DpSN4XVLgzUj7XntW1Go_55YPtQeDK-hwXHYx',
+        },
+    }).then((response) => {
+            var response = response.data;
+            res.send(response);
+        },
+        (error) => {
+            var status = error.response.status
+        }
+    );
 });
 
 app.get('/api/account',
@@ -266,6 +289,61 @@ app.post('/api/signup', async (req, res) => {
         }else{
             res.end();
         }
+    }catch (e) {
+        console.log(e);
+        res.end();
+    }
+});
+
+app.get('/api/search', async (req, res) => {
+    try {
+        var startDate = req.body.startDate;
+        var endDate = req.body.endDate;
+        var peopleInputs = req.body.peopleInputs;
+        var venueInputs = req.body.peopleInputs;
+
+        var dest_set = Set();
+        var src_dict = {};
+        for(var i = 0; i < venueInputs.length; i++) {
+            var dest_response = amadeus.referenceData.amadeus.referenceData.locations.airports.get({
+                longitude : venueInputs[i].longitude,
+                latitude  : venueInputs[i].latitude
+            });
+            dest_set.add(dest_response.data[0]['iataCode']);
+        }
+
+        for(var i = 0; i < peopleInputs.length; i++) {
+            var src_response = amadeus.referenceData.amadeus.referenceData.locations.airports.get({
+                longitude : peopleInputs[i].longitude,
+                latitude  : peopleInputs[i].latitude
+            });
+            var airportCode = src_response.data[0]['iataCode'];
+            if(airportCode in src_dict) {
+                src_dict[airportCode] = src_dict[airportCode] + 1;
+            }
+            else {
+                src_dict[airportCode] = 1;
+            }
+        }
+        var endpoint_url = 'https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?';
+        endpoint_url+=('departure_locations=' + src_dict);
+        endpoint_url+=('meeting_options=' + dest_set);
+        endpoint_url+=('departure_date' + startDate);
+
+        //TODO: change this hardcoded url to 'endpoint_url' once python script is complete
+        https.get('https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?message=HelloWorld', (resp) => {
+            let data = '';
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+            resp.on('end', () => {
+                console.log(JSON.parse(data));
+            });
+        }).on("error", (err) => {
+            console.log("Error");
+        });
+        //TODO: parse and return requested info
+
     }catch (e) {
         console.log(e);
         res.end();

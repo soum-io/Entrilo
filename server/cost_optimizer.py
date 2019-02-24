@@ -2,6 +2,7 @@ from amadeus import Client, ResponseError
 import networkx as nx
 import json
 import time
+import matplotlib
 
 amadeus = Client(
         client_id = '01kBKVCiSvkcgZgC33ASxyiDGMXHC3te',
@@ -30,6 +31,18 @@ def create_edge_tag(source_node_tag, dest_node_tag):
 
     return tag
 
+def get_leg_price(departure_code, arrival_code, departure_date, carrier_code, flight_no):
+    response = amadeus.shopping.flight_offers.get(origin=departure_code, destination=arrival_code, departureDate=departure_date, nonStop='true')
+    offer_items = response.data
+    for offer_item in offer_items:
+        segment = offer_item['offerItems'][0]['services'][0]['segments'][0]['flightSegment']
+        if segment['carrierCode'] == carrier_code and segment['number'] == flight_no:
+            price = int(float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']))
+            return price
+        else:
+            return 99999
+
+
 # departure_locations is a dict where the key is a airport code and a value is the number of people flying out of that airport 
 # meeting_options is a list of the possible meeting cities as specified by the user
 def create_graph(departure_locations, meeting_options, departure_date):
@@ -48,20 +61,16 @@ def create_graph(departure_locations, meeting_options, departure_date):
     for airport in home_airports:
         total_people += departure_locations[airport]
 
-    source_node = 'SOURCE_____'
+    source_node = 'SOURCE'
     G.add_node(source_node, demand=total_people)
     node_set.add(source_node)
     total_demand += total_people
-    print('SOURCE')
-    print(total_demand)
 
     # make last sentinel node
-    dest_node = 'DEST_____'
-    G.add_node(dest_node, demand=(-2*total_people))
+    dest_node = 'DEST'
+    G.add_node(dest_node, demand=(-1*total_people))
     node_set.add(dest_node)
-    total_demand += (-2*total_people)
-    print('DEST')
-    print(-2*total_people)
+    total_demand += (-1*total_people)
 
     for pair in sd_pairs:
         try:
@@ -80,11 +89,9 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
                 airport_tag = first_segment['departure']['iataCode']
                 if airport_tag not in node_set:
-                    G.add_node(airport_tag, demand=int(departure_locations[airport_tag]))
+                    G.add_node(airport_tag) 
                     node_set.add(airport_tag)
                     total_demand += int(departure_locations[airport_tag])
-                    print('AIRPORT TAG IS ', airport_tag)
-                    print(int(departure_locations[airport_tag]))
 
                 full_flight_no = first_segment['carrierCode'] + first_segment['number']
 
@@ -96,14 +103,20 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
                 edge_tag = create_edge_tag(airport_tag, departure_tag)
                 if edge_tag not in edge_set:
-                    G.add_edge(airport_tag, departure_tag, weight=0)
+                    G.add_edge(airport_tag, departure_tag, capacity=int(departure_locations[airport_tag]))
+                    print("Adding a flight from  ",airport_tag, " to ", departure_tag)
+
                     edge_set.add(edge_tag)
 
                 # need to add an edge with the source and dest
-                G.add_edge('SOURCE', airport_tag, weight=0)
+                edge_tag = create_edge_tag('SOURCE', airport_tag)
+                if edge_tag not in edge_set:
+                    G.add_edge('SOURCE', airport_tag, weight=0)
+                    print("Adding a flight from SOURCE to ", airport_tag)
+                    edge_set.add(edge_tag)
+
                
                 # for the last flight segment, we need to initialize the sentinel nodes (airport codes of conference destinations without flights)
-                # TODO do the same thing that was done above on segments[-1]
 
                 last_segment = segments[-1]['flightSegment']
 
@@ -122,14 +135,40 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
                 edge_tag = create_edge_tag(arrival_tag, airport_tag)
                 if edge_tag not in edge_set:
-                    G.add_edge(arrival_tag, airport_tag)
+                    G.add_edge(arrival_tag, airport_tag, capacity = total_people)
+                    print("Adding flight from ",arrival_tag, " to ", airport_tag)
+
                     edge_set.add(edge_tag)
 
                 # add edge with dest
-                G.add_edge(airport_tag, 'DEST', weight=0)
+                edge_tag = create_edge_tag(airport_tag, 'DEST')
+                if edge_tag not in edge_set:
+                    G.add_edge(airport_tag, 'DEST', weight=0, capacity = total_people)
+                    print("Adding flight from ",airport_tag, " to DEST")
+                    edge_set.add(edge_tag)
+
 
                 # flight segment is the leg of a flight
                 for flight_segment_big in segments:
+                    # create a node  for the airport itself
+                    flight_segment = flight_segment_big['flightSegment']
+                    departure = flight_segment['departure']
+                    airport_tag = departure['iataCode']
+                    if airport_tag not in node_set:
+                        G.add_node(airport_tag)
+                        node_set.add(airport_tag)
+
+                    #create an edge from the airport the the departure
+                    flight_segment = flight_segment_big['flightSegment']
+                    full_flight_no = flight_segment['carrierCode'] + flight_segment['number']
+                    departure_tag = create_node_tag(departure['iataCode'], 'D', full_flight_no)
+                    
+                    edge_tag = create_edge_tag(airport_tag, departure_tag)
+                    if edge_tag not in edge_set:
+                        G.add_edge(airport_tag, departure_tag)
+                        print("adding flight from ", airport_tag, " to ", departure_tag)
+                        edge_set.add(edge_tag)
+
                     # create a node for the flight departure and arrival
                     flight_segment = flight_segment_big['flightSegment']
                     full_flight_no = flight_segment['carrierCode'] + flight_segment['number']
@@ -147,19 +186,45 @@ def create_graph(departure_locations, meeting_options, departure_date):
                         node_set.add(arrival_tag)
 
                     # create an edge for the flight itself
-                    price =  float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes'])
+                    carrier_code = flight_segment['carrierCode']
+                    flight_no = flight_segment['number']
 
-                    edge_tag = create_edge_tag(airport_tag, departure_tag)
-                    if edge_tag not in node_set:
-                        G.add_edge(arrival_tag, departure_tag, weight = price)
+                    '''
+                    THIS PORTION BELOW IS INCORRECT
+                    print(len(flight_segment_big[0]))
+                    if (len(flight_segment_big[0]) == 2):
+                        price = int(float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']))
+                    else:
+                        price = get_leg_price(departure['iataCode'], arrival['iataCode'], departure_date, carrier_code, flight_no)
+                    '''
+                    
+                    price = int(float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']))
+
+                    edge_tag = create_edge_tag(departure_tag, arrival_tag)
+                    if edge_tag not in edge_set:
+                        my_capacity = flight_segment_big['pricingDetailPerAdult']['availability']
+                        G.add_edge(departure_tag, arrival_tag, weight = price, capacity = my_capacity)
+                        print("adding flight from ", departure_tag, " to ", arrival_tag, " with weight ", price)
                         edge_set.add(edge_tag)
+
+                    # create a node for the airport itself
+                    airport_tag = arrival['iataCode']
+                    if airport_tag not in node_set:
+                        G.add_node(airport_tag)
+                        node_set.add(airport_tag)
+
+                    #create an edge from the arrival to the airport
+                    edge_tag = create_edge_tag(arrival_tag, airport_tag)
+                    if edge_tag not in edge_set:
+                        G.add_edge(arrival_tag, airport_tag)
+                        print("adding edge from ", arrival_tag, " to ", airport_tag)
+                        edge_set.add(edge_tag)
+
+
+
 
         except ResponseError as error:
             print(error)
-
-    print("TOTAL DEMAND! IS ", total_demand)
- 
-    print(G.degree(G.nodes()))
 
     return G
 
@@ -176,19 +241,22 @@ def main(departure_locations, meeting_options, departure_date):
     G = create_graph(departure_locations, meeting_options, departure_date)
     flow_dict = nx.max_flow_min_cost(G, 'SOURCE', 'DEST')
 
-    print(flow_cost)
     print(flow_dict)
-    
+
+    mincost = nx.cost_of_flow(G, flow_dict)
+
+    print(mincost)
+
+
 
 def dummy():
     departure_locations = {}
     departure_locations['ORD'] = 5
-    departure_locations['AUS'] = 3
-    departure_locations['ATL'] = 4
+    departure_locations['MIA'] = 3
 
     meeting_options = []
     meeting_options.append('SEA')
-    meeting_options.append('NYC')
+    meeting_options.append('SFO')
 
     departure_date = '2019-08-01'
 
