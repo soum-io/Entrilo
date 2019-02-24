@@ -220,35 +220,42 @@ def create_graph(departure_locations, meeting_options, departure_date):
                         print("adding edge from ", arrival_tag, " to ", airport_tag)
                         edge_set.add(edge_tag)
 
-
-
-
         except ResponseError as error:
             print(error)
 
     return G
 
 def main(departure_locations, meeting_options, departure_date):
-    '''
-    try:
-        response = amadeus.reference_data.urls.checkin_links.get(airlineCode='BA')
-        print(response.data)
-    except ResponseError as error:
-        print(error)
-    '''
-
     G = nx.DiGraph()
     G = create_graph(departure_locations, meeting_options, departure_date)
     flow_dict = nx.max_flow_min_cost(G, 'SOURCE', 'DEST')
 
     print(flow_dict)
-
     mincost = nx.cost_of_flow(G, flow_dict)
-
     print(mincost)
 
+    pairs = []
 
+    for u in flow_dict.keys():
+        for v in (flow_dict[u]).keys():
+            if int(flow_dict[u][v]) > 0:
+                print(u, v, flow_dict[u][v])
+                pairs.append((u,v))
 
+    max_people = 0
+    best_loc = ''
+    for pair in pairs:
+        if pair[1] == 'DEST':
+            if int(flow_dict[pair[0]][pair[1]]) > max_people:
+                best_loc = pair[0]
+                max_people = int(flow_dict[pair[0]][pair[1]])
+
+    print('Best location is ',best_loc)
+
+    return best_loc, mincost
+
+#this right here shows the format of the input you should put in
+'''
 def dummy():
     departure_locations = {}
     departure_locations['ORD'] = 5
@@ -259,7 +266,8 @@ def dummy():
     meeting_options.append('SFO')
 
     departure_date = '2019-08-01'
-
+    
     main(departure_locations, meeting_options, departure_date)
 
 dummy()
+'''
