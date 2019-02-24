@@ -346,6 +346,7 @@ app.post('/api/search', async (req, res) => {
             });
             var data = JSON.parse(dest_response.body);
             data = data.data;
+            venueInputs[i].iata = data[0]['iataCode'];
             dest_set.push(data[0]['iataCode']);
         }
 
@@ -357,6 +358,7 @@ app.post('/api/search', async (req, res) => {
             var temp = JSON.parse(src_response.body);
             temp = temp.data;
             var airportCode = temp[0]['iataCode'];
+            peopleInputs[i].iata = airportCode;
             if(airportCode in src_dict) {
                 src_dict[airportCode] = src_dict[airportCode] + 1;
             }
@@ -369,6 +371,7 @@ app.post('/api/search', async (req, res) => {
         endpoint_url+=('&mo=' + dest_set.join(","));
         endpoint_url+=('&date=' + formatDate(startDate));
         console.log(endpoint_url);
+        return res.send(endpoint_url);
         https.get(endpoint_url, (resp) => {
             let data = '';
             resp.on('data', (chunk) => {
