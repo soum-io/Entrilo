@@ -37,9 +37,31 @@ def create_graph(departure_locations, meeting_options, departure_date):
     node_set = set()
     edge_set = set()
 
+    total_demand = 0
+
     # get all of the top three flights from every combination of source and destination
     home_airports = departure_locations.keys()
     sd_pairs = get_source_dest_pairs(home_airports, meeting_options)
+
+    # make first sentinel node
+    total_people = 0
+    for airport in home_airports:
+        total_people += departure_locations[airport]
+
+    source_node = 'SOURCE'
+    G.add_node(source_node, demand=total_people)
+    node_set.add(source_node)
+    total_demand += total_people
+    print('SOURCE')
+    print(total_demand)
+
+    # make last sentinel node
+    dest_node = 'DEST'
+    G.add_node(dest_node, demand=(-2*total_people))
+    node_set.add(dest_node)
+    total_demand += (-2*total_people)
+    print('DEST')
+    print(-2*total_people)
 
     for pair in sd_pairs:
         try:
@@ -50,20 +72,6 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
             offer_items = response.data
            
-            # make first sentinel node
-            total_people = 0
-            for airport in home_airports:
-                total_people += departure_locations[airport]
-
-            source_node = 'SOURCE'
-            G.add_node(source_node, demand=total_people)
-            node_set.add(source_node)
-
-            # make last sentinel node
-            dest_node = 'DEST'
-            G.add_node(dest_node, demand=(-1*total_people))
-            node_set.add(dest_node)
-
             for offer_item in offer_items:
                 segments = offer_item['offerItems'][0]['services'][0]['segments']
 
@@ -72,8 +80,11 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
                 airport_tag = first_segment['departure']['iataCode']
                 if airport_tag not in node_set:
-                    G.add_node(airport_tag, demand=departure_locations[airport_tag])
+                    G.add_node(airport_tag, demand=int(departure_locations[airport_tag]))
                     node_set.add(airport_tag)
+                    total_demand += int(departure_locations[airport_tag])
+                    print('AIRPORT TAG IS ', airport_tag)
+                    print(int(departure_locations[airport_tag]))
 
                 full_flight_no = first_segment['carrierCode'] + first_segment['number']
 
@@ -130,7 +141,7 @@ def create_graph(departure_locations, meeting_options, departure_date):
                         node_set.add(arrival_tag)
 
                     # create an edge for the flight itself
-                    price =  offer_item['offerItems'][0]['pricePerAdult']['total'] + offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']
+                    price =  float(offer_item['offerItems'][0]['pricePerAdult']['total']) + float(offer_item['offerItems'][0]['pricePerAdult']['totalTaxes'])
 
                     edge_tag = create_edge_tag(airport_tag, departure_tag)
                     if edge_tag not in node_set:
@@ -140,6 +151,8 @@ def create_graph(departure_locations, meeting_options, departure_date):
         except ResponseError as error:
             print(error)
 
+    print("TOTAL DEMAND! IS ", total_demand)
+ 
     return G
 
 def main(departure_locations, meeting_options, departure_date):
@@ -154,8 +167,11 @@ def main(departure_locations, meeting_options, departure_date):
 
     G = nx.DiGraph()
     G = create_graph(departure_locations, meeting_options, departure_date)
+    flow_dict = nx.max_flow_min_cost(G, 'SOURCE', 'DEST')
 
-
+    print(flow_cost)
+    print(flow_dict)
+    
 
 def dummy():
     departure_locations = {}
