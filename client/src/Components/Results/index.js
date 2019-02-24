@@ -77,6 +77,10 @@ class Results extends Component {
 		for(x = 0; x < venueInputs.length; x++){
 			this.state.defaultLocation.push(venueInputs[x]["location"]);
 			this.forceUpdate();
+			this.state.defaultAirport.push(venueInputs[x]["iata"])
+			this.forceUpdate();
+			this.state.defaultTotalCost.push(venueInputs[x]["cost"]);
+			this.forceUpdate();;
 		}
 
 
@@ -99,10 +103,6 @@ class Results extends Component {
 			this.state.isYelpLoaded2.push(false);
 			this.forceUpdate();
 
-			this.state.defaultAirport.push("Denver");
-			this.forceUpdate();
-			this.state.defaultTotalCost.push("$400");
-			this.forceUpdate();
 		}
 
 
