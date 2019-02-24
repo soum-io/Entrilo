@@ -28,37 +28,23 @@ class Results extends Component {
     constructor(props) {
         super(props);
         this.state = {
+			peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
+			defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
+			defaultAirport: ["Denver", "Chicago - O'Hare"],
+			defaultTotalCost: ["$12,500", "$18,250"],
+
 			// peopleNames: [],
-			// // defaultAirport: [],
 			// defaultLocation: [],
-			// // defaultTotalCost: [],
-			//
-			// showFlights:[],
-			// showHotels:[],
-			// showVenues:[],
-			// venueData:[],
-			// hotelData:[],
-			// isYelpLoaded: [], // for venues
-			// isYelpLoaded2: [], // for hotels
-			//
-			// ButtonNames: "Show Names of People Attending",
-			// loading:true,
-			// all_results_loaded:true,
-			// namesOpen: false,
-			// allYelpLoaded:false,
+			// defaultAirport: [],
+			// defaultTotalCost: [],
 
-            peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
-            defaultAirport: ["Denver"],
-            defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
-            defaultTotalCost: ["$12,500"],
-
-			showFlights:[false, false],
-			showHotels:[false, false],
-			showVenues:[false, false],
-			venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
-			hotelData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
-			isYelpLoaded: [false, false], // for venues
-			isYelpLoaded2: [false, false], // for hotels
+			showFlights:[],
+			showHotels:[],
+			showVenues:[],
+			venueData:[],
+			hotelData:[],
+			isYelpLoaded: [], // for venues
+			isYelpLoaded2: [], // for hotel
 
 			ButtonNames: "Show Names of People Attending",
 			loading:true,
@@ -70,11 +56,11 @@ class Results extends Component {
 
     componentDidMount() {
 		// fetch Data here
-		if (this.state.loading) {
-			this.turnOffLoading = setTimeout(() => {
-				this.setState(() => ({loading: false}))
-			}, 500);
-		}
+		// if (this.state.loading) {
+		// 	this.turnOffLoading = setTimeout(() => {
+		// 		this.setState(() => ({loading: false}))
+		// 	}, 500);
+		// }
 
 		// var input_data = JSON.parse(this.props.location.state.results);
 		// console.log(input_data);
@@ -93,24 +79,26 @@ class Results extends Component {
 		// }
 		//
 		//
-		// var len_report = this.state.defaultLocation.length;
-		// var i;
-		// for(i = 0; i < len_report; len_report){
-		// 	this.state.showFlights.push(false);
-		// 	this.forceUpdate();
-		// 	this.state.showHotels.push(false);
-		// 	this.forceUpdate();
-		// 	this.state.showVenues.push(false);
-		// 	this.forceUpdate();
-		// 	this.state.venueData.push([["","",""],["","",""],["","",""]]);
-		// 	this.forceUpdate();
-		// 	this.state.hotelData.push([["","",""],["","",""],["","",""]]);
-		// 	this.forceUpdate();
-		// 	this.state.isYelpLoaded.push(false);
-		// 	this.forceUpdate();
-		// 	this.state.isYelpLoaded2.push(false);
-		// 	this.forceUpdate();
-		// }
+
+		var len_report = this.state.defaultLocation.length;
+		console.log("len_report")
+		var i;
+		for(i = 0; i < len_report; i++){
+			this.state.showFlights.push(false);
+			this.forceUpdate();
+			this.state.showHotels.push(false);
+			this.forceUpdate();
+			this.state.showVenues.push(false);
+			this.forceUpdate();
+			this.state.venueData.push([["","",""],["","",""],["","",""]]);
+			this.forceUpdate();
+			this.state.hotelData.push([["","",""],["","",""],["","",""]]);
+			this.forceUpdate();
+			this.state.isYelpLoaded.push(false);
+			this.forceUpdate();
+			this.state.isYelpLoaded2.push(false);
+			this.forceUpdate();
+		}
 
 
 		if(this.state.all_results_loaded){
