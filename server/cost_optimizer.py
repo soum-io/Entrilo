@@ -1,5 +1,7 @@
 from amadeus import Client, ResponseError
 import networkx as nx
+import json
+import time
 
 amadeus = Client(
         client_id = '01kBKVCiSvkcgZgC33ASxyiDGMXHC3te',
@@ -44,9 +46,14 @@ def create_graph(departure_locations, meeting_options, departure_date):
             source = pair[0]
             dest = pair[1]
             response = amadeus.shopping.flight_offers.get(origin=source, destination=dest, departureDate=departure_date, max=5)
+            time.sleep(1)
+            print(response.request.verb)
+            print(response.request.path)
+            print(response.request.params)
             print(response.data)
 
-            offer_items = response.data.offerItems.services.segments
+            #print(response.data[0])
+            offer_items = response.data
            
             # make first sentinel node
             total_people = 0
@@ -63,10 +70,10 @@ def create_graph(departure_locations, meeting_options, departure_date):
             node_set.add(dest_node)
 
             for offer_item in offer_items:
-                segments = offer_item['services']['segments']
+                segments = offer_item['offerItems'][0]['services'][0]['segments']
 
                 # for the first flight segment, we need to initialize the sentinel nodes (start airports without flights)
-                first_segment = segments[0]
+                first_segment = segments[0]['flightSegment']
 
                 airport_tag = first_segment['departure']['iataCode']
                 if airport_tag not in node_set:
@@ -89,7 +96,7 @@ def create_graph(departure_locations, meeting_options, departure_date):
                 # for the last flight segment, we need to initialize the sentinel nodes (airport codes of conference destinations without flights)
                 # TODO do the same thing that was done above on segments[-1]
 
-                last_segment = segments[-1]
+                last_segment = segments[-1]['flightSegment']
 
                 full_flight_no = last_segment['carrierCode'] + last_segment['number']
 
@@ -110,8 +117,9 @@ def create_graph(departure_locations, meeting_options, departure_date):
                     edge_set.add(edge_tag)
 
                 # flight segment is the leg of a flight
-                for flight_segment in segments:
+                for flight_segment_big in segments:
                     # create a node for the flight departure and arrival
+                    flight_segment = flight_segment_big['flightSegment']
                     full_flight_no = flight_segment['carrierCode'] + flight_segment['number']
 
                     departure = flight_segment['departure']
@@ -127,7 +135,7 @@ def create_graph(departure_locations, meeting_options, departure_date):
                         node_set.add(arrival_tag)
 
                     # create an edge for the flight itself
-                    price = response.data['offerItems']['price']['total'] + response.data['offerItems']['price']['totalTaxes']
+                    price =  offer_item['offerItems'][0]['pricePerAdult']['total'] + offer_item['offerItems'][0]['pricePerAdult']['totalTaxes']
 
                     edge_tag = create_edge_tag(airport_tag, departure_tag)
                     if edge_tag not in node_set:
@@ -159,11 +167,11 @@ def dummy():
     departure_locations = {}
     departure_locations['ORD'] = 5
     departure_locations['ATX'] = 3
-    departure_locations['SFO'] = 4
+    departure_locations['ATL'] = 4
 
     meeting_options = []
     meeting_options.append('SEA')
-    meeting_options.append('JFK')
+    meeting_options.append('NYC')
 
     departure_date = '2019-08-01'
 
