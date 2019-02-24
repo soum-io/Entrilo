@@ -31,31 +31,30 @@ class Results extends Component {
             namesOpen: false,
             ButtonNames: "Show Names of People Attending",
 
-            defaultCostOpen: [false],
-            defaultCostNames: ["Show General Cost Breakdown"],
-            defaultAirport: ["Denver"],
-            defaultHotel: ["Shea Hotel"],
-            defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525"],
-            defaultAirportlink: ["#"],
-            defaultHotellink: ["#"],
-            defaultLocationLink: ["#"],
-            defaultTotalCost: ["$12,500"],
-            defaultFlightsCost: ["$8,000"],
-            defaultVenueCost: ["$2,000"],
-            defaultHotelsCost: ["$2,000"],
-            defaultTransportationCost: ["$500"],
-            defaultDepartFlights: [["A123", "B123", "C123"]],
-            defaultDepartFlightsCost: [["$1", "$2", "$3"]],
-            defaultReturnFlights: [["_A123", "_B123", "_C123"]],
-            defaultReturnFlightsCost: [["$4", "$5", "$6"]],
-            defaultCostDetailOpen: [false],
-            defaultCostDetailNames: ["Show Detailed Cost Breakdown"],
+            defaultCostOpen: [false, false],
+            defaultCostNames: ["Show General Cost Breakdown", "Show General Cost Breakdown"],
+            defaultAirport: ["Denver", "Denver"],
+            defaultHotel: ["Shea Hotel", "Shea Hotel"],
+            defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
+            defaultAirportlink: ["#", "#"],
+            defaultHotellink: ["#", "#"],
+            defaultLocationLink: ["#", "#"],
+            defaultTotalCost: ["$12,500", "$12,500"],
+            defaultFlightsCost: ["$8,000", "$8,000"],
+            defaultVenueCost: ["$2,000", "$2,000"],
+            defaultHotelsCost: ["$2,000", "$2,000"],
+            defaultTransportationCost: ["$500", "$500"],
+            defaultDepartFlights: [["A123", "B123", "C123"], ["A123", "B123", "C123"]],
+            defaultDepartFlightsCost: [["$1", "$2", "$3"], ["$1", "$2", "$3"]],
+            defaultReturnFlights: [["_A123", "_B123", "_C123"], ["_A123", "_B123", "_C123"]],
+            defaultReturnFlightsCost: [["$4", "$5", "$6"], ["$4", "$5", "$6"]],
+            defaultCostDetailOpen: [false, false],
+            defaultCostDetailNames: ["Show Detailed Cost Breakdown", "Show Detailed Cost Breakdown"],
             loading:true,
 
 			all_results_loaded:true,
-			isYelpLoaded: [false],
-			items:[[]],
-
+			isYelpLoaded: [false, false],
+			items:[[], []],
         }
     }
 
@@ -71,10 +70,13 @@ class Results extends Component {
 			this.state.defaultCostOpen.map((_, index) => {
 				fetch("/yelp?location="+this.state.defaultLocation[index],{method: 'GET'})
 				.then(res=> res.json()).then(json => {
-								this.state.isYelpLoaded[index] = true;
-								this.forceUpdate();
-								this.state.items[index] = json;
-								this.forceUpdate();
+
+						this.state.items[index] = json;
+						this.forceUpdate();
+						this.state.isYelpLoaded[index] = true;
+						this.forceUpdate();
+						console.log(json);
+						console.log(this.state.defaultLocation[index]);
 					});
 			})
 		}
@@ -167,6 +169,7 @@ class Results extends Component {
 		                            </tr>
 									</table>
 		                            <table>
+									<Row>
 		                            <Col md="auto">
 		                            <Button  size="xs" className="btn btn-default show-cost" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
 									<Button  size="xs" className="btn btn-default show-cost" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
@@ -251,15 +254,16 @@ class Results extends Component {
 			                            </Form.Group>
 		                            </Collapse>
 		                            </Col>
+									</Row>
 		                            </table>
 	                        </Form.Group>
 						</Col>
 
-						<Col>
+						<Col md = "auto">
 							<Form.Group className="singleResult">
 								<Row className="justify-content-md-center">
 									<Col md="auto">
-										Top Yelp Results For Venues Near Here
+										Top Yelp Results For Hotels Near Here
 									</Col>
 								</Row>
 								<table>
