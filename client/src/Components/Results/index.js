@@ -115,84 +115,44 @@ class Results extends Component {
                 <Form>
                     {this.state.defaultCostOpen.map((input, index) =>
                         <Form.Group className="singleResult">
-                            <Row>
-                                <Col>
-                                Location:
-                                </Col>
-                                <Col>
+							<table>
+                            <tr>
+                                <th>
+                                Location Name:
+                                </th>
+                                <td>
                                 <a href="#">{this.state.defaultLocation[index]}</a>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col >
+                                </td>
+                            </tr>
+                            <tr>
+                                <th >
                                     Destination Airport:
-                                </Col>
-                                <Col>
+                                </th>
+                                <td>
                                     <a href="#" > {this.state.defaultAirport[index]} </a>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
                                 Hotel Name:
-                                </Col>
-                                <Col>
+                                </th>
+                                <td>
                                 <a href="#">{this.state.defaultHotel[index]}</a>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
                                 Total Cost:
-                                </Col>
-                                <Col>
+                                </th>
+                                <td>
                                 {this.state.defaultTotalCost[index]}
-                                </Col>
-                            </Row>
-                            <Row c>
-                            <Col md="auto">
-                            <Button  className="btn btn-default btn-height" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
-                            <Collapse in={this.state.defaultCostOpen[index]}>
-                            <Form.Group  controlId="peopleOnTrip">
+                                </td>
+                            </tr>
+							</table>
                             <table>
-                                    <tr>
-                                        <th>
-                                        Flights:
-                                        </th>
-                                        <td>
-                                        {this.state.defaultFlightsCost[index]}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                        Venue:
-                                        </th>
-                                        <td>
-                                        {this.state.defaultVenueCost[index]}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                        Hotels:
-                                        </th>
-                                        <td>
-                                        {this.state.defaultHotelsCost[index]}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                        Transportation:
-                                        </th>
-                                        <td>
-                                        {this.state.defaultTransportationCost[index]}
-                                        </td>
-                                    </tr>
-                            </table>
-                            </Form.Group>
-                            </Collapse>
-                            </Col>
-                            </Row>
-                            <Row >
                             <Col md="auto">
-                            <Button  className="btn btn-default btn-height" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
+                            <Button  className="btn btn-default show-cost" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
+							<Button  className="btn btn-default show-cost" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
                             <Collapse in={this.state.defaultCostDetailOpen[index]}>
                                 <Form.Group  controlId="peopleOnTrip">
                                     <table>
@@ -235,8 +195,46 @@ class Results extends Component {
                                     </table>
                                 </Form.Group>
                             </Collapse>
+                            <Collapse in={this.state.defaultCostOpen[index]}>
+	                            <Form.Group  controlId="peopleOnTrip">
+	                            <table>
+	                                    <tr>
+	                                        <th>
+	                                        Flights:
+	                                        </th>
+	                                        <td>
+	                                        {this.state.defaultFlightsCost[index]}
+	                                        </td>
+	                                    </tr>
+	                                    <tr>
+	                                        <th>
+	                                        Venue:
+	                                        </th>
+	                                        <td>
+	                                        {this.state.defaultVenueCost[index]}
+	                                        </td>
+	                                    </tr>
+	                                    <tr>
+	                                        <th>
+	                                        Hotels:
+	                                        </th>
+	                                        <td>
+	                                        {this.state.defaultHotelsCost[index]}
+	                                        </td>
+	                                    </tr>
+	                                    <tr>
+	                                        <th>
+	                                        Transportation:
+	                                        </th>
+	                                        <td>
+	                                        {this.state.defaultTransportationCost[index]}
+	                                        </td>
+	                                    </tr>
+	                            </table>
+	                            </Form.Group>
+                            </Collapse>
                             </Col>
-                            </Row>
+                            </table>
                         </Form.Group>
                     )}
                 </Form>
@@ -271,6 +269,8 @@ class Results extends Component {
             this.state.defaultCostNames[index] = "Show General Cost Breakdown"
             this.forceUpdate()
         } else {
+			this.state.defaultCostDetailOpen[index] = false;
+            this.forceUpdate()
             this.state.defaultCostOpen[index] = true;
             this.forceUpdate()
             this.state.defaultCostNames[index] = "Hide General Cost Breakdown"
@@ -286,6 +286,8 @@ class Results extends Component {
             this.state.defaultCostDetailNames[index] = "Show Detailed Cost Breakdown"
             this.forceUpdate()
         } else {
+			this.state.defaultCostOpen[index] = false;
+            this.forceUpdate()
             this.state.defaultCostDetailOpen[index] = true;
             this.forceUpdate()
             this.state.defaultCostDetailNames[index] = "Hide Detailed Cost Breakdown"

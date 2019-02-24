@@ -1,10 +1,18 @@
 .singleResult {
   border: 2px solid grey;
   border-radius: 5px;
-  width:500px;
+  width:550px;
 }
 
 .btn-height {
+    padding: 4px 8px 4px 8px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.show-cost {
+    margin-right: 10px;
+    margin-left: 10px;
     padding: 4px 8px 4px 8px;
     margin-bottom: 10px;
     margin-top: 10px;

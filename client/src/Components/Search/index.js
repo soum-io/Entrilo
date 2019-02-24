@@ -112,7 +112,7 @@ class Search extends Component {
                                     <Col>
                                         <Form.Group controlId={`person${index}_name`}>
                                             <Autocomplete
-                                                inputProps={{ className:'Demo__search-input form-control'}}
+                                                inputProps={{placeholder:"Full Name", className:'Demo__search-input form-control'}}
                                                 getItemValue={(item) => item.name}
                                                 items={this.state.filterPeople}
                                                 renderItem={(item, isHighlighted) =>
@@ -120,7 +120,6 @@ class Search extends Component {
                                                         {item.name}
                                                     </div>
                                                 }
-                                                placeholder="Full Name"
                                                 onChange={this.onChangeName(index)}
                                                 value={input.name}
                                                 onSelect={(val,item) => {
@@ -144,7 +143,7 @@ class Search extends Component {
                                         <Form.Control placeholder="Address Location" onChange={this.onChangeAddress(index)} value={input.location}/>
                                         </Form.Group>
                                     </Col>
-                                    <Col >
+                                    <Col md="auto" >
                                         <Form.Label id="classLabel"> Travel Class: </Form.Label>
                                     </Col>
                                     <Col>
@@ -172,14 +171,14 @@ class Search extends Component {
                     </Form.Group>
 
                     <Form.Group controlId="DefaultVenues">
-                        <Button variant="primary"  className="btn btn-default btn-custom" onClick={() => this.appendVenue()}>Add Venue</Button>
+                        <Button variant="primary"  className="btn btn-default btn-custom" onClick={() => this.appendVenue()}>Add Location</Button>
                         <div id="venueAdder">
                             {this.state.venueInputs.map((input, index) =>
                                 <Row key={index}>
                                     <Col>
-                                        <Form.Group controlId={`venue${index}_name`}>
+                                        <Form.Group controlId={`venue${index}_name`} >
                                             <Autocomplete
-                                                inputProps={{ className:'Demo__search-input form-control'}}
+                                                inputProps={{placeholder:"Location Name", className:'Demo__search-input form-control'}}
                                                 getItemValue={(item) => item.name}
                                                 items={this.state.filterVenue}
                                                 renderItem={(item, isHighlighted) =>
@@ -187,7 +186,6 @@ class Search extends Component {
                                                         {item.name}
                                                     </div>
                                                 }
-                                                placeholder="Venue Name"
                                                 onChange={this.onChangeVenue(index)}
                                                 value={input.name}
                                                 onSelect={(val,item) => {

@@ -131,7 +131,7 @@ class Account extends Component {
 
 
                     <Form.Group controlId="PeopleComing">
-                        <Button variant="primary" onClick={() => this.appendPeople()}>Add Person</Button>
+                        <Button className = "adderBtn" variant="primary" onClick={() => this.appendPeople()}>Add Person</Button>
                         <div id="peopleAdder">
                             {this.state.peopleInputs.map((input, index) =>
                                 <Row key={index}>
@@ -212,6 +212,9 @@ class Account extends Component {
                                             }}
                                         </PlacesAutocomplete>
                                     </Col>
+                                    <Col md="auto" >
+                                        <Form.Label id="classLabel"> Travel Class: </Form.Label>
+                                    </Col>
                                     <Col>
                                         <Form.Group controlId={`person${index}_ac`}>
                                             <Form.Control as='select' onChange={this.onChangeAC(index)} value={input.airline_class}>
@@ -237,13 +240,13 @@ class Account extends Component {
                     </Form.Group>
 
                     <Form.Group controlId="DefaultVenues">
-                        <Button variant="primary" onClick={() => this.appendVenue()}>Add Venue</Button>
+                        <Button className = "adderBtn"  variant="primary" onClick={() => this.appendVenue()}>Add Default Location</Button>
                         <div id="venueAdder">
                             {this.state.venueInputs.map((input, index) =>
                                 <Row key={index}>
                                     <Col>
                                         <Form.Group controlId={`venue${index}_name`}>
-                                            <Form.Control placeholder="Venue Name" onChange={this.onChangeVenue(index)} onBlur={(e)=>{this.updateVenue(index);}} value={input.name}/>
+                                            <Form.Control placeholder="Location Name" onChange={this.onChangeVenue(index)} onBlur={(e)=>{this.updateVenue(index);}} value={input.name}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
