@@ -98,15 +98,6 @@ class Search extends Component {
                                     <Col>
                                         <Form.Group controlId={`person${index}_ac`}>
                                         <Form.Control as='select' onChange={this.onChangeAC(index)} value={input.ac} >
-                                            {/*<Dropdown.Toggle variant="success" id="dropdown-basic">*/}
-                                                {/*Default Airplane Class*/}
-                                            {/*</Dropdown.Toggle>*/}
-
-                                            {/*<Dropdown.Menu>*/}
-                                                {/*<Dropdown.Item >Economy</Dropdown.Item>*/}
-                                                {/*<Dropdown.Item >Premium</Dropdown.Item>*/}
-                                                {/*<Dropdown.Item >First</Dropdown.Item>*/}
-                                            {/*</Dropdown.Menu>*/}
                                             <option>Economy</option>
                                             <option>Business</option>
                                         </Form.Control>
@@ -135,7 +126,7 @@ class Search extends Component {
                                         </Form.Group>
                                     </Col>
                                     <Col xs={1}>
-                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}></Button>
+                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}> X </Button>
                                     </Col>
                                 </Row>)}
                         </div>
