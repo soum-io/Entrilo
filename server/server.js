@@ -4,6 +4,7 @@ var Strategy = require('passport-local').Strategy;
 const bodyParser = require('body-parser');
 const config = require('./config');
 const utils = require('./utils');
+const https = require('https');
 const app = express();
 const port = process.env.PORT || 5000;
 app.use(bodyParser.json());
@@ -266,6 +267,59 @@ app.post('/api/signup', async (req, res) => {
         }else{
             res.end();
         }
+    }catch (e) {
+        console.log(e);
+        res.end();
+    }
+});
+
+app.get('/api/Search', async (req, res) => {
+    try {
+        var startDate = req.body.startDate;
+        var endDate = req.body.endDate;
+        var peopleInputs = req.body.peopleInputs;
+        var venueInputs = req.body.peopleInputs;
+
+        var dest_set = Set();
+        var src_dict = {};
+        for(var i = 0; i < venueInputs.length; i++) {
+            var dest_response = amadeus.referenceData.amadeus.referenceData.locations.airports.get({
+                longitude : venueInputs[i].longitude,
+                latitude  : venueInputs[i].latitude
+            });
+            dest_set.add(dest_response.data[0]['iataCode']);
+        }
+
+        for(var i = 0; i < peopleInputs.length; i++) {
+            var src_response = amadeus.referenceData.amadeus.referenceData.locations.airports.get({
+                longitude : peopleInputs[i].longitude,
+                latitude  : peopleInputs[i].latitude
+            });
+            var airportCode = src_response.data[0]['iataCode'];
+            if(airportCode in src_dict) {
+                src_dict[airportCode] = src_dict[airportCode] + 1;
+            }
+            else {
+                src_dict[airportCode] = 1;
+            }
+        }
+        var endpoint_url = 'https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?';
+        endpoint_url+=('departure_locations=' + src_dict);
+        endpoint_url+=('meeting_options=' + dest_set);
+        endpoint_url+=('departure_date' + startDate);
+
+        https.get('https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?message=HelloWorld', (resp) => {
+            let data = '';
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+            resp.on('end', () => {
+                console.log(JSON.parse(data));
+            });
+        }).on("error", (err) => {
+            console.log("Error");
+        });
+
     }catch (e) {
         console.log(e);
         res.end();
