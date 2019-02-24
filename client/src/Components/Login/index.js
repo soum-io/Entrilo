@@ -40,8 +40,7 @@ class Login extends Component {
                 this.setState({error:''})
             }, 5000);
         }
-        //const body = await response.text();
-        //this.setState({responseToPost: body});
+
     };
 
     render() {
