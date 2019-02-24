@@ -4,8 +4,10 @@
   "proxy": "http://localhost:5000/",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.7",
     "bootstrap": "^4.3.1",
     "chroma-js": "^2.0.3",
+    "emotion": "^10.0.7",
     "material-ui": "^0.20.2",
     "react": "^16.8.3",
     "react-bootstrap": "^1.0.0-beta.5",
@@ -14,7 +16,8 @@
     "react-dom": "^16.8.3",
     "react-places-autocomplete": "^7.2.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.5"
+    "react-scripts": "2.1.5",
+    "react-spinners": "^0.5.1"
   },
   "scripts": {
     "start": "react-scripts start",

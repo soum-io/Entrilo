@@ -92,7 +92,7 @@ class Search extends Component {
                                         <Form.Control placeholder="Address Location" onChange={this.onChangeAddress(index)} value={input.address}/>
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={1.5}>
+                                    <Col >
                                         <Form.Label id="classLabel"> Travel Class: </Form.Label>
                                     </Col>
                                     <Col>
