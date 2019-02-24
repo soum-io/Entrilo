@@ -5,7 +5,7 @@
 }
 
 .borderMe {
-    border: 2px solid Blue;
+    border: 1px solid Blue;
     border-radius: 5px;
     padding:30px;
     margin: 20px;
@@ -28,8 +28,8 @@
 
 
 .btn-margin {
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin:10px;
+    padding:10px;
 }
 
 #costLabel {
