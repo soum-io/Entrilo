@@ -30,13 +30,13 @@ class Results extends Component {
         this.state = {
 			// peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
 			// defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
-			defaultAirport: ["Denver"],
-			defaultTotalCost: ["$12,500"],
+			// defaultAirport: ["Denver"],
+			// defaultTotalCost: ["$12,500"],
 
 			peopleNames: [],
 			defaultLocation: [],
-			// defaultAirport: [],
-			// defaultTotalCost: [],
+			defaultAirport: [],
+			defaultTotalCost: [],
 
 			showFlights:[],
 			showHotels:[],
@@ -97,6 +97,11 @@ class Results extends Component {
 			this.state.isYelpLoaded.push(false);
 			this.forceUpdate();
 			this.state.isYelpLoaded2.push(false);
+			this.forceUpdate();
+
+			this.state.defaultAirport.push("Denver");
+			this.forceUpdate();
+			this.state.defaultTotalCost.push("$400");
 			this.forceUpdate();
 		}
 
