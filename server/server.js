@@ -253,7 +253,7 @@ app.post('/api/signup', async (req, res) => {
                 res.send({"message":"Company Name or Username already exists"});
             } else {
                 //Sign up the company
-                var user = await db.collection("companies").insertOne({"company_name":company_name,"username":username,"password":utils.hashPassword(password)});
+                var user = await db.collection("companies").insertOne({"company_name":company_name,"employees":[],"venue":[],"username":username,"password":utils.hashPassword(password)});
                 if(user){
                     user = user.ops[0];
                     res.send(utils.parseOutPassword(user));
