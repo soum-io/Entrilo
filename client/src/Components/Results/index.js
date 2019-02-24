@@ -69,6 +69,11 @@ class Results extends Component {
 		var venueInputs = input_data["venueInputs"];
 		var x = 0;
 
+		this.state.defaultAirport.push(input_data["city"])
+		this.forceUpdate();
+		this.state.defaultTotalCost.push("$" + input_data["cost"]);
+		this.forceUpdate();;
+
 		for(x = 0; x < peopleInputs.length; x++){
 			this.state.peopleNames.push(peopleInputs[x]["name"]);
 			this.forceUpdate();
@@ -77,14 +82,10 @@ class Results extends Component {
 		for(x = 0; x < venueInputs.length; x++){
 			this.state.defaultLocation.push(venueInputs[x]["location"]);
 			this.forceUpdate();
-			this.state.defaultAirport.push(venueInputs[x]["iata"])
-			this.forceUpdate();
-			this.state.defaultTotalCost.push(venueInputs[x]["cost"]);
-			this.forceUpdate();;
 		}
 
 
-		var len_report = this.state.defaultLocation.length;
+		var len_report = this.state.defaultAirport.length;
 		console.log("len_report")
 		var i;
 		for(i = 0; i < len_report; i++){
@@ -107,8 +108,8 @@ class Results extends Component {
 
 
 		if(this.state.all_results_loaded){
-			this.state.defaultLocation.map((_, index) => {
-				fetch("/yelp?location="+this.state.defaultLocation[index],{method: 'GET'})
+			this.state.defaultAirport.map((_, index) => {
+				fetch("/yelp?location="+this.state.defaultAirport[index],{method: 'GET'})
 				.then(res=> res.json()).then(json => {
 						this.state.isYelpLoaded[index] = true;
 						this.forceUpdate();
@@ -125,8 +126,8 @@ class Results extends Component {
 		}
 
 		if(this.state.all_results_loaded){
-			this.state.defaultLocation.map((_, index) => {
-				fetch("/yelp2?location="+this.state.defaultLocation[index],{method: 'GET'})
+			this.state.defaultAirport.map((_, index) => {
+				fetch("/yelp2?location="+this.state.defaultAirport[index],{method: 'GET'})
 				.then(res=> res.json()).then(json => {
 						this.state.isYelpLoaded2[index] = true;
 						this.forceUpdate();
@@ -195,11 +196,11 @@ class Results extends Component {
 
                 <div id="defaultResults">
                 <Form>
-                    {this.state.defaultLocation.map((input, index) =>
+                    {this.state.defaultAirport.map((input, index) =>
 						<Row className="justify-content-md-center">
 							<Col className = "borderMe" md="auto">
 								<Row>
-									 {this.state.defaultTotalCost[index] + " " } - { " " + this.state.defaultLocation[index] }
+									 {this.state.defaultTotalCost[index] + " " } - { " " + this.state.defaultAirport }
 								</Row>
 								<Row className="justify-content-md-center">
 									<Button variant = "outline-primary" className = "btn-margin" onClick={() => this.showFlights(index)}> Show Flight Info </Button>
@@ -216,14 +217,6 @@ class Results extends Component {
 													</Col>
 												</Row>
 												<table>
-					                            <tr>
-					                                <th>
-					                                Meeting Location:
-					                                </th>
-					                                <td>
-					                             		{this.state.defaultLocation[index]}
-					                                </td>
-					                            </tr>
 					                            <tr>
 					                                <th >
 					                                    Destination Airport:

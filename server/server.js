@@ -371,7 +371,6 @@ app.post('/api/search', async (req, res) => {
         endpoint_url+=('&mo=' + dest_set.join(","));
         endpoint_url+=('&date=' + formatDate(startDate));
         console.log(endpoint_url);
-        return res.send(endpoint_url);
         https.get(endpoint_url, (resp) => {
             let data = '';
             resp.on('data', (chunk) => {
