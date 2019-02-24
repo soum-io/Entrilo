@@ -35,7 +35,7 @@ class Results extends Component {
             defaultCostNames: ["Show General Cost Breakdown"],
             defaultAirport: ["Denver"],
             defaultHotel: ["Shea Hotel"],
-            defaultLocation: ["Shea Venue"],
+            defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525"],
             defaultAirportlink: ["#"],
             defaultHotellink: ["#"],
             defaultLocationLink: ["#"],
@@ -50,7 +50,11 @@ class Results extends Component {
             defaultReturnFlightsCost: [["$4", "$5", "$6"]],
             defaultCostDetailOpen: [false],
             defaultCostDetailNames: ["Show Detailed Cost Breakdown"],
-            loading:true
+            loading:true,
+
+			all_results_loaded:true,
+			isYelpLoaded: [false],
+			items:[[]],
 
         }
     }
@@ -63,6 +67,20 @@ class Results extends Component {
             }, 500);
         }
 
+		if(this.state.all_results_loaded){
+			this.state.defaultCostOpen.map((_, index) => {
+				fetch("https://api.yelp.com/v3/businesses/search?location="+this.state.defaultLocation[index]+"limit=3",{method: 'GET',
+							headers:{
+								'Authorization': 'Bearer hGly48lgeqWTCo_lvHZYzvpNmoyuvK-awoGpsF5kWzr_loJYaD0wKDogWo171o-sWX1bzhRkNdVDmXndguWNt_DCV23DpSN4XVLgzUj7XntW1Go_55YPtQeDK-hwXHYx',
+							},
+							credentials: 'include'}).then(res=> res.json()).then(json => {
+								this.state.isYelpLoaded[index] = true;
+								this.forceUpdate();
+								this.state.items[index] = json;
+								this.forceUpdate();
+					});
+			})
+		}
     }
 
     render() {
@@ -114,137 +132,190 @@ class Results extends Component {
                 <div id="defaultResults">
                 <Form>
                     {this.state.defaultCostOpen.map((input, index) =>
-                        <Form.Group className="singleResult">
-							<table>
-                            <tr>
-                                <th>
-                                Location Name:
-                                </th>
-                                <td>
-                                <a href="#">{this.state.defaultLocation[index]}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th >
-                                    Destination Airport:
-                                </th>
-                                <td>
-                                    <a href="#" > {this.state.defaultAirport[index]} </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                Hotel Name:
-                                </th>
-                                <td>
-                                <a href="#">{this.state.defaultHotel[index]}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                Total Cost:
-                                </th>
-                                <td>
-                                {this.state.defaultTotalCost[index]}
-                                </td>
-                            </tr>
-							</table>
-                            <table>
-                            <Col md="auto">
-                            <Button  className="btn btn-default show-cost" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
-							<Button  className="btn btn-default show-cost" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
-                            <Collapse in={this.state.defaultCostDetailOpen[index]}>
-                                <Form.Group  controlId="peopleOnTrip">
-                                    <table>
-                                    <tr>
-                                        <th>
-                                        Name
-                                        </th>
-                                        <th>
-                                        Depart Flight
-                                        </th>
-                                        <th>
-                                        Depart Flight Cost
-                                        </th>
-                                        <th>
-                                        Return Flight
-                                        </th>
-                                        <th>
-                                        Return Flight Cost
-                                        </th>
-                                    </tr>
-                                    {this.state.defaultDepartFlights[index].map((_, inner_idx) =>
-                                            <tr>
-                                                <td>
-                                                    {this.state.peopleNames[inner_idx]}
-                                                </td>
-                                                <td>
-                                                    {this.state.defaultDepartFlights[index][inner_idx]}
-                                                </td>
-                                                <td>
-                                                    {this.state.defaultDepartFlightsCost[index][inner_idx]}
-                                                </td>
-                                                <td>
-                                                    {this.state.defaultReturnFlights[index][inner_idx]}
-                                                </td>
-                                                <td>
-                                                    {this.state.defaultReturnFlightsCost[index][inner_idx]}
-                                                </td>
-                                            </tr>
-                                    )}
-                                    </table>
-                                </Form.Group>
-                            </Collapse>
-                            <Collapse in={this.state.defaultCostOpen[index]}>
-	                            <Form.Group  controlId="peopleOnTrip">
-	                            <table>
-	                                    <tr>
-	                                        <th>
-	                                        Flights:
-	                                        </th>
-	                                        <td>
-	                                        {this.state.defaultFlightsCost[index]}
-	                                        </td>
-	                                    </tr>
-	                                    <tr>
-	                                        <th>
-	                                        Venue:
-	                                        </th>
-	                                        <td>
-	                                        {this.state.defaultVenueCost[index]}
-	                                        </td>
-	                                    </tr>
-	                                    <tr>
-	                                        <th>
-	                                        Hotels:
-	                                        </th>
-	                                        <td>
-	                                        {this.state.defaultHotelsCost[index]}
-	                                        </td>
-	                                    </tr>
-	                                    <tr>
-	                                        <th>
-	                                        Transportation:
-	                                        </th>
-	                                        <td>
-	                                        {this.state.defaultTransportationCost[index]}
-	                                        </td>
-	                                    </tr>
-	                            </table>
-	                            </Form.Group>
-                            </Collapse>
-                            </Col>
-                            </table>
-                        </Form.Group>
+						<Row>
+						<Col>
+	                        <Form.Group className="singleResult">
+									<table>
+		                            <tr>
+		                                <th>
+		                                Provided Location:
+		                                </th>
+		                                <td>
+		                                <a href="#">{this.state.defaultLocation[index]}</a>
+		                                </td>
+		                            </tr>
+		                            <tr>
+		                                <th >
+		                                    Destination Airport:
+		                                </th>
+		                                <td>
+		                                    <a href="#" > {this.state.defaultAirport[index]} </a>
+		                                </td>
+		                            </tr>
+		                            <tr>
+		                                <th>
+		                                Hotel Name:
+		                                </th>
+		                                <td>
+		                                <a href="#">{this.state.defaultHotel[index]}</a>
+		                                </td>
+		                            </tr>
+		                            <tr>
+		                                <th>
+		                                Total Cost:
+		                                </th>
+		                                <td>
+		                                {this.state.defaultTotalCost[index]}
+		                                </td>
+		                            </tr>
+									</table>
+		                            <table>
+		                            <Col md="auto">
+		                            <Button  size="xs" className="btn btn-default show-cost" onClick={() => this.collapseDefaultDetailCost(index)}> {this.state.defaultCostDetailNames[index]} </Button>
+									<Button  size="xs" className="btn btn-default show-cost" onClick={() => this.collapseDefaultCost(index)}> {this.state.defaultCostNames[index]} </Button>
+		                            <Collapse in={this.state.defaultCostDetailOpen[index]}>
+		                                <Form.Group  controlId="peopleOnTrip">
+		                                    <table>
+		                                    <tr>
+		                                        <th>
+		                                        Name
+		                                        </th>
+		                                        <th>
+		                                        Depart Flight
+		                                        </th>
+		                                        <th>
+		                                        Depart Flight Cost
+		                                        </th>
+		                                        <th>
+		                                        Return Flight
+		                                        </th>
+		                                        <th>
+		                                        Return Flight Cost
+		                                        </th>
+		                                    </tr>
+		                                    {this.state.defaultDepartFlights[index].map((_, inner_idx) =>
+		                                            <tr>
+		                                                <td>
+		                                                    {this.state.peopleNames[inner_idx]}
+		                                                </td>
+		                                                <td>
+		                                                    {this.state.defaultDepartFlights[index][inner_idx]}
+		                                                </td>
+		                                                <td>
+		                                                    {this.state.defaultDepartFlightsCost[index][inner_idx]}
+		                                                </td>
+		                                                <td>
+		                                                    {this.state.defaultReturnFlights[index][inner_idx]}
+		                                                </td>
+		                                                <td>
+		                                                    {this.state.defaultReturnFlightsCost[index][inner_idx]}
+		                                                </td>
+		                                            </tr>
+		                                    )}
+		                                    </table>
+		                                </Form.Group>
+		                            </Collapse>
+		                            <Collapse in={this.state.defaultCostOpen[index]}>
+			                            <Form.Group  controlId="peopleOnTrip">
+			                            <table>
+			                                    <tr>
+			                                        <th>
+			                                        Flights:
+			                                        </th>
+			                                        <td>
+			                                        {this.state.defaultFlightsCost[index]}
+			                                        </td>
+			                                    </tr>
+			                                    <tr>
+			                                        <th>
+			                                        Venue:
+			                                        </th>
+			                                        <td>
+			                                        {this.state.defaultVenueCost[index]}
+			                                        </td>
+			                                    </tr>
+			                                    <tr>
+			                                        <th>
+			                                        Hotels:
+			                                        </th>
+			                                        <td>
+			                                        {this.state.defaultHotelsCost[index]}
+			                                        </td>
+			                                    </tr>
+			                                    <tr>
+			                                        <th>
+			                                        Transportation:
+			                                        </th>
+			                                        <td>
+			                                        {this.state.defaultTransportationCost[index]}
+			                                        </td>
+			                                    </tr>
+			                            </table>
+			                            </Form.Group>
+		                            </Collapse>
+		                            </Col>
+		                            </table>
+	                        </Form.Group>
+						</Col>
+
+						<Col>
+							<Form.Group className="singleResult">
+								<Row className="justify-content-md-center">
+									<Col md="auto">
+										Top Yelp Results For Venues Near Here
+									</Col>
+								</Row>
+								<table>
+								<tr>
+									<th>
+										Venue Name
+									</th>
+									<th>
+										Address
+									</th>
+									<th>
+										Yelp Price
+									</th>
+								</tr>
+								<Collapse in={this.state.isYelpLoaded[index]}>
+									<div>
+										{this.showYelp(index)}
+									</div>
+								</Collapse>
+								</table>
+							</Form.Group>
+						</Col>
+						</Row>
                     )}
                 </Form>
                 </div>
-
             </div>
         );
     }
 
-
+	showYelp(index){
+		if(!this.state.isYelpLoaded[index]){
+			return;
+		} else {
+			 return (
+				 <div>
+				 {this.state.items[index]["businesses"].map((_, yelpIdx) =>
+					 <tr>
+						 <td>
+						 	{this.state.items[index]["businesses"][yelpIdx]["name"]}
+						 </td>
+						 <td>
+						 	{this.state.items[index]["businesses"][yelpIdx]["location"]["address1"]}
+						 </td>
+						 <td>
+							{this.state.items[index]["businesses"][yelpIdx]["price"]}
+						 </td>
+					 </tr>
+			 	 )}
+				 </div>
+			 );
+		}
+    }
 
     collapseNames(){
         var cur = this.state.namesOpen;
