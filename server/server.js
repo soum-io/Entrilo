@@ -54,14 +54,8 @@ passport.deserializeUser(function(user, cb) {
     });
 });
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
 app.get('/yelp',function (req, res) {
-    axios.get('https://api.yelp.com/v3/businesses/search?limit=3&categories=venues&location='+req.params.location,{
+    axios.get('https://api.yelp.com/v3/businesses/search?limit=3&location='+req.query.location,{
         headers:{
             'Authorization': 'Bearer hGly48lgeqWTCo_lvHZYzvpNmoyuvK-awoGpsF5kWzr_loJYaD0wKDogWo171o-sWX1bzhRkNdVDmXndguWNt_DCV23DpSN4XVLgzUj7XntW1Go_55YPtQeDK-hwXHYx',
         },
