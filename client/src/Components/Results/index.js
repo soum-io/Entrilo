@@ -52,59 +52,42 @@ class Results extends Component {
             defaultCostDetailOpen: [false, false],
             defaultCostDetailNames: ["Show Detailed Cost Breakdown", "Show Detailed Cost Breakdown"],
             loading:true,
+			venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
 
 			all_results_loaded:true,
 			isYelpLoaded: [false, false],
-			items:[{},{}]
+
+			allYelpLoaded:false
         }
     }
 
-	handleChange = e => {
-		  const {name, value} = e.target;
-
-		  this.setState(() => ({
-			[name]: value
-		  }))
-		}
-
     componentDidMount() {
-        //fetch Data here
-        if (this.state.loading) {
-            this.turnOffLoading = setTimeout(() => {
-                this.setState(() => ({loading: false}))
-            }, 500);
-        }
+		// fetch Data here
+		if (this.state.loading) {
+			this.turnOffLoading = setTimeout(() => {
+				this.setState(() => ({loading: false}))
+			}, 500);
+		}
 
 		if(this.state.all_results_loaded){
 			this.state.defaultCostOpen.map((_, index) => {
 				fetch("/yelp?location="+this.state.defaultLocation[index],{method: 'GET'})
 				.then(res=> res.json()).then(json => {
-						// this.state.items[index] = json;
-						// this.forceUpdate();
-						// this.state.isYelpLoaded[index] = true;
-						// this.forceUpdate();
-
-
-
-						this.setState({
-						  isYelpLoaded: update(this.state.isYelpLoaded, {[index] : {$set: true}}),
-						  items: update(this.state.items, {[index] : {$set: json}})
+						this.state.isYelpLoaded[index] = true;
+						this.forceUpdate();
+						this.state.venueData[index].map((__, yelpIdx) => {
+							this.state.venueData[index][yelpIdx][0] = json["businesses"][yelpIdx]["name"];
+							this.forceUpdate();
+							this.state.venueData[index][yelpIdx][1] = json["businesses"][yelpIdx]["location"]["address1"];
+							this.forceUpdate();
+							this.state.venueData[index][yelpIdx][2] = json["businesses"][yelpIdx]["price"];
+							this.forceUpdate();
 						})
-						console.log(this.state.isYelpLoaded)
-						console.log(this.state.items)
-
-
-
-						// var isYelpLoaded = this.state.isYelpLoaded;
-						// isYelpLoaded[index] = true;
-						//
-						// var items = this.state.items;
-						// items[index] = json;
-						// this.setState({items: items, isYelpLoaded: isYelpLoaded});
 
 					});
 			})
 		}
+
     }
 
     render() {
@@ -119,6 +102,7 @@ class Results extends Component {
             />
             </div> )
         }
+
         return (
             <div>
                 <h2> Results <Button className="btn btn-default btn-margin" variant="outline-primary"> <Link to="search">Search Again</Link> </Button> </h2>
@@ -292,9 +276,30 @@ class Results extends Component {
 									</Col>
 								</Row>
 								<table>
-								<Collapse in={this.state.isYelpLoaded[index]}>
-										{this.showYelp(index)}
-								</Collapse>
+									<tr>
+				   					 <th>
+				   						 Venue Name
+				   					 </th>
+				   					 <th>
+				   						 Address
+				   					 </th>
+				   					 <th>
+				   						 Yelp Price
+				   					 </th>
+				   				 </tr>
+				   				 {this.state.venueData[index].map((_, yelpIdx) =>
+				   					 <tr>
+				   						 <td>
+				   						 	{this.state.venueData[index][yelpIdx][0]}
+				   						 </td>
+				   						 <td>
+				   						 	{this.state.venueData[index][yelpIdx][1]}
+				   						 </td>
+				   						 <td>
+				   							{this.state.venueData[index][yelpIdx][2]}
+				   						 </td>
+				   					 </tr>
+								 )}
 								</table>
 							</Form.Group>
 						</Col>
@@ -307,9 +312,10 @@ class Results extends Component {
     }
 
 	showYelp(index){
-		if(!this.state.isYelpLoaded[index]){
+		if(!this.state.isYelpLoaded.every( v => v === true )){
 			return;
 		} else {
+			console.log("hereee")
 			 return (
 				 <span>
 				 <tr>
@@ -389,6 +395,7 @@ class Results extends Component {
             this.forceUpdate()
         }
     }
+
 }
 
 
