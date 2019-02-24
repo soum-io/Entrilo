@@ -8,7 +8,6 @@ const config = require('./config');
 const utils = require('./utils');
 const https = require('https');
 const app = express();
-const Amadeus = require('amadeus');
 const port = process.env.PORT || 5000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -332,33 +331,32 @@ app.post('/api/signup', async (req, res) => {
 
 app.post('/api/search', async (req, res) => {
     try {
-        var amadeus = new Amadeus({
-            clientId: '01kBKVCiSvkcgZgC33ASxyiDGMXHC3te',
-            clientSecret: '6zcvK3TOsVqWNIGc'
-        });
         var startDate = req.body.startDate;
-        console.log(startDate);
         var endDate = req.body.endDate;
         var peopleInputs = req.body.peopleInputs;
         console.log(peopleInputs);
-        var venueInputs = req.body.peopleInputs;
+        var venueInputs = req.body.venueInputs;
 
-        var dest_set = new Set();
+        var dest_set = [];
         var src_dict = {};
         for(var i = 0; i < venueInputs.length; i++) {
-            var dest_response = amadeus.referenceData.locations.airports.get({
+            var dest_response = await amadeus.referenceData.locations.airports.get({
                 longitude : venueInputs[i].longitude,
                 latitude  : venueInputs[i].latitude
             });
-            dest_set.add(dest_response.data[0]['iataCode']);
+            var data = JSON.parse(dest_response.body);
+            data = data.data;
+            dest_set.push(data[0]['iataCode']);
         }
 
         for(var i = 0; i < peopleInputs.length; i++) {
-            var src_response = amadeus.referenceData.locations.airports.get({
+            var src_response = await amadeus.referenceData.locations.airports.get({
                 longitude : peopleInputs[i].longitude,
                 latitude  : peopleInputs[i].latitude
             });
-            var airportCode = src_response.data[0]['iataCode'];
+            var temp = JSON.parse(src_response.body);
+            temp = temp.data;
+            var airportCode = temp[0]['iataCode'];
             if(airportCode in src_dict) {
                 src_dict[airportCode] = src_dict[airportCode] + 1;
             }
@@ -367,18 +365,21 @@ app.post('/api/search', async (req, res) => {
             }
         }
         var endpoint_url = 'https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?';
-        endpoint_url+=('departure_locations=' + src_dict);
-        endpoint_url+=('meeting_options=' + dest_set);
-        endpoint_url+=('departure_date' + startDate);
-
-        //TODO: change this hardcoded url to 'endpoint_url' once python script is complete
+        endpoint_url+=('&dl=' + JSON.stringify(src_dict));
+        endpoint_url+=('&mo=' + dest_set.join(","));
+        endpoint_url+=('&date=' + formatDate(startDate));
+        console.log(endpoint_url);
         https.get(endpoint_url, (resp) => {
             let data = '';
             resp.on('data', (chunk) => {
                 data += chunk;
             });
             resp.on('end', () => {
-                console.log(JSON.parse(data));
+                var t = data.split(",");
+                var  city = t[0].substring(2,t[0].length)+","+t[1].substring(1,t[1].length-1);
+                var cost = t[2].substring(t[2].length-2).trim();
+                cost = cost.substring(0,cost.length-1);
+                var response = {peopleInputs:peopleInputs,venueInputs:venueInputs,city:city,cost:cost};
             });
         }).on("error", (err) => {
             console.log("Error");
@@ -390,3 +391,15 @@ app.post('/api/search', async (req, res) => {
         res.end();
     }
 });
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
