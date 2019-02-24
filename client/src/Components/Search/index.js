@@ -64,11 +64,14 @@ class Search extends Component {
         }
         this.setState({redirector:true});
         console.log(this.state);
-        const response = await fetch('/api/search', {
+        var url_string = '/api/search';
+        url_string+=('?startDate=' + this.state.startDate);
+        url_string+=('?endDate=' + this.state.endDate);
+        url_string+=('?peopleInputs=' + this.state.peopleInputs);
+        url_string+=('?venueInputs=' + this.state.venueInputs);
+        const response = await fetch(url_string, {
             method: 'GET',
             credentials: 'include',
-            body: JSON.stringify({startDate: this.state.startDate, endDate: this.state.endDate,
-                                            peopleInputs: this.state.peopleInputs, venueInputs: this.state.venueInputs}),
         });
         if(response.ok){
             const resJson = await response.json();

@@ -273,7 +273,7 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
-app.get('/api/Search', async (req, res) => {
+app.get('/api/search', async (req, res) => {
     try {
         var startDate = req.body.startDate;
         var endDate = req.body.endDate;
