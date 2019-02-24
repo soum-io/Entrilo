@@ -11,19 +11,78 @@ import "react-datepicker/dist/react-datepicker.css";
 
 class Account extends Component {
 
-    handleCloseClick = () => {
-        this.setState({
-            address: '',
-            latitude: null,
-            longitude: null,
-        });
-    };
-
     handleError = (status, clearSuggestions) => {
         console.log('Error from Google Maps API', status); // eslint-disable-line no-console
         this.setState({ errorMessage: status }, () => {
             clearSuggestions();
         });
+    };
+
+    updatePeople = (index) => {
+        if(this.state.peopleInputs[index].name.length > 0){
+            if(this.state.peopleInputs[index]._id != undefined){
+                //Update Person
+                this.setState(prevState => {
+                        fetch('/api/employee/'+prevState.peopleInputs[index]._id,{method: 'PUT',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            credentials: 'include',body:JSON.stringify({airline_class:prevState.peopleInputs[index].airline_class,name:prevState.peopleInputs[index].name,longitude:prevState.peopleInputs[index].longitude,latitude:prevState.peopleInputs[index].latitude,location:prevState.peopleInputs[index].location})});
+                        return ({peopleInputs: prevState.peopleInputs});
+                    }
+                )
+            }else{
+                //Try to create Person
+                if(this.state.peopleInputs[index].longitude != null && this.state.peopleInputs[index].latitude != null && this.state.peopleInputs[index].airline_class == 0 || this.state.peopleInputs[index].airline_class == 1){
+                    this.setState(async prevState => {
+                            fetch('/api/employee',{method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                },
+                                credentials: 'include',body:JSON.stringify({airline_class:prevState.peopleInputs[index].airline_class,name:prevState.peopleInputs[index].name,longitude:prevState.peopleInputs[index].longitude,latitude:prevState.peopleInputs[index].latitude,location:prevState.peopleInputs[index].location})}).then(result=>{return result.json()}).then(jsonRes=>{
+                                console.log(jsonRes);
+                                this.setState({peopleInputs : jsonRes["employee"]});
+                            });
+                            return ({peopleInputs: prevState.peopleInputs})
+                        }
+                    )
+                }
+            }
+        }
+    };
+
+    updateVenue = (index) => {
+        if(this.state.venueInputs[index].name.length > 0){
+            if(this.state.venueInputs[index]._id != undefined){
+                //Update Venue
+                this.setState(prevState => {
+                        fetch('/api/venue/'+prevState.venueInputs[index]._id,{method: 'PUT',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            credentials: 'include',body:JSON.stringify({name:prevState.venueInputs[index].name,longitude:prevState.venueInputs[index].longitude,latitude:prevState.venueInputs[index].latitude,location:prevState.venueInputs[index].location})});
+                        return ({venueInputs: prevState.venueInputs})
+                    }
+                )
+            }else{
+                //Try to create venue
+                if(this.state.venueInputs[index].longitude != null && this.state.venueInputs[index].latitude != null){
+                    this.setState(prevState => {
+                            fetch('/api/venue',{method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                },
+                                credentials: 'include',body:JSON.stringify({name:prevState.venueInputs[index].name,longitude:prevState.venueInputs[index].longitude,latitude:prevState.venueInputs[index].latitude,location:prevState.venueInputs[index].location})});
+                            return ({venueInputs: prevState.venueInputs})
+                        }
+                    )
+                }
+            }
+        }
     };
 
     constructor(props) {
@@ -43,8 +102,8 @@ class Account extends Component {
             credentials: 'include',})
             .then(response => response.json())
             .then(resJson => {
-                console.log(resJson["employees"]);
-                this.setState({companyName :resJson["company_name"],companyId : resJson["_id"],peopleInputs : resJson["employees"],venueInputs : resJson["venue"]});
+                console.log(resJson["employee"]);
+                this.setState({companyName :resJson["company_name"],companyId : resJson["_id"],peopleInputs : resJson["employee"],venueInputs : resJson["venue"]});
             }).catch(e => this.props.history.push('/login'));
         this.deletePerson = this.deletePerson.bind(this);
         this.deleteVenue = this.deleteVenue.bind(this);
@@ -79,7 +138,7 @@ class Account extends Component {
                                 <Row key={index}>
                                     <Col>
                                         <Form.Group controlId={`person${index}_name`}>
-                                            <Form.Control placeholder="Name" onChange={this.onChangeName(index)} value={input.name}/>
+                                            <Form.Control placeholder="Name" onBlur={(e)=>{this.updatePeople(index);}} onChange={this.onChangeName(index)} value={input.name}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
@@ -88,9 +147,9 @@ class Account extends Component {
                                                 this.state.peopleInputs[index].location = value;
                                                 this.forceUpdate();
                                                 this.setState({
-                                                latitude: null,
-                                                longitude: null,
-                                                errorMessage: '',
+                                                    latitude: null,
+                                                    longitude: null,
+                                                    errorMessage: '',
                                                 });
                                             }}
                                             value={input.location}
@@ -99,10 +158,11 @@ class Account extends Component {
                                                 this.state.peopleInputs[index].location = loc[0].formatted_address;
                                                 this.forceUpdate();
                                                 loc = loc[0].geometry.location;
-                                                this.state.peopleInputs[index].latitude = loc.lat;
+                                                this.state.peopleInputs[index].latitude = loc.lat();
                                                 this.forceUpdate();
-                                                this.state.peopleInputs[index].longitude = loc.lng;
+                                                this.state.peopleInputs[index].longitude = loc.lng();
                                                 this.forceUpdate();
+                                                this.updatePeople(index);
                                             }}
                                             onError={this.handleError}
                                             shouldFetchSuggestions={input.location.length > 2}
@@ -141,8 +201,8 @@ class Account extends Component {
                                                                 <div className="Demo__dropdown-footer">
                                                                     <div>
                                                                         <img width="100"
-                                                                            src={'./powered_by_google_default.png'}
-                                                                            className="Demo__dropdown-footer-image"
+                                                                             src={'./powered_by_google_default.png'}
+                                                                             className="Demo__dropdown-footer-image"
                                                                         />
                                                                     </div>
                                                                 </div>
@@ -166,8 +226,7 @@ class Account extends Component {
                                                 {/*<Dropdown.Item >First</Dropdown.Item>*/}
                                                 {/*</Dropdown.Menu>*/}
                                                 <option value="0">Economy</option>
-                                                <option value="1">Premium</option>
-                                                <option value="2">First</option>
+                                                <option value="1">Business</option>
                                             </Form.Control>
                                         </Form.Group>
                                     </Col>
@@ -186,7 +245,7 @@ class Account extends Component {
                                 <Row key={index}>
                                     <Col>
                                         <Form.Group controlId={`venue${index}_name`}>
-                                            <Form.Control placeholder="Venue Name" onChange={this.onChangeVenue(index)} value={input.name}/>
+                                            <Form.Control placeholder="Venue Name" onChange={this.onChangeVenue(index)} onBlur={(e)=>{this.updateVenue(index);}} value={input.name}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
@@ -206,10 +265,11 @@ class Account extends Component {
                                                 this.state.venueInputs[index].location = loc[0].formatted_address;
                                                 this.forceUpdate();
                                                 loc = loc[0].geometry.location;
-                                                this.state.venueInputs[index].latitude = loc.lat;
+                                                this.state.venueInputs[index].latitude = loc.lat();
                                                 this.forceUpdate();
-                                                this.state.venueInputs[index].longitude = loc.lng;
+                                                this.state.venueInputs[index].longitude = loc.lng();
                                                 this.forceUpdate();
+                                                this.updateVenue(index);
                                             }}
                                             onError={this.handleError}
                                             shouldFetchSuggestions={input.location.length > 2}
@@ -272,7 +332,7 @@ class Account extends Component {
     }
 
     appendPeople() {
-        let newInput = {first:'',last:'', location:'',ac:'Economy'};
+        let newInput = {name:'', location:'',airline_class:0};
         this.setState(prevState => ({peopleInputs: prevState.peopleInputs.concat([newInput])}));
     }
 
@@ -310,10 +370,11 @@ class Account extends Component {
             e.persist();
             this.setState(prevState => {
                 let person = prevState.peopleInputs[index];
-                person.ac = e.target.value;
+                person.airline_class = e.target.selectedIndex;
                 prevState.peopleInputs[index] = person;
                 return ({peopleInputs: prevState.peopleInputs})
             })
+            this.updatePeople(index);
         }
     }
 
@@ -322,7 +383,7 @@ class Account extends Component {
             e.persist();
             this.setState(prevState => {
                 let venue = prevState.venueInputs[index];
-                venue.venue = e.target.value;
+                venue.name = e.target.value;
                 prevState.venueInputs[index] = venue;
                 return ({venueInputs: prevState.venueInputs})
             })
@@ -346,8 +407,8 @@ class Account extends Component {
         return (() => {
             //console.log(index);
             this.setState(prevState => {
-                fetch('/api/employee/'+prevState.peopleInputs[index]._id,{method: 'DELETE',
-                    credentials: 'include',});
+                    fetch('/api/employee/'+prevState.peopleInputs[index]._id,{method: 'DELETE',
+                        credentials: 'include',});
                     prevState.peopleInputs.splice(index, 1);
                     return ({peopleInputs: prevState.peopleInputs})
                 }
@@ -359,8 +420,8 @@ class Account extends Component {
     deleteVenue(index) {
         return (() => {
             this.setState(prevState => {
-                fetch('/api/venue/'+prevState.venueInputs[index]._id,{method: 'DELETE',
-                    credentials: 'include',});
+                    fetch('/api/venue/'+prevState.venueInputs[index]._id,{method: 'DELETE',
+                        credentials: 'include',});
                     prevState.venueInputs.splice(index, 1);
                     return ({venueInputs: prevState.venueInputs})
                 }
