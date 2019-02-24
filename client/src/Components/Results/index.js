@@ -28,36 +28,57 @@ class Results extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
-            namesOpen: false,
-            ButtonNames: "Show Names of People Attending",
+			peopleNames: [],
+			defaultAirport: [],
+			defaultLocation: [],
+			defaultTotalCost: [],
 
-            defaultAirport: ["Denver", "Denver"],
-            defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
-            defaultTotalCost: ["$12,500", "$12,500"],
-			venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
-			hotelData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
-			all_results_loaded:true,
-			isYelpLoaded: [false, false], // for venues
-			isYelpLoaded2: [false, false], // for hotels
+			showFlights:[],
+			showHotels:[],
+			showVenues:[],
+			venueData:[],
+			hotelData:[],
+			isYelpLoaded: [], // for venues
+			isYelpLoaded2: [], // for hotels
 
-			showFlights:[false, false],
-			showHotels:[false, false],
-			showVenues:[false, false],
-
-
-			allYelpLoaded:false,
+			ButtonNames: "Show Names of People Attending",
 			loading:true,
+			all_results_loaded:true,
+			namesOpen: false,
+			allYelpLoaded:false,
+
+            // peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
+            // defaultAirport: ["Denver", "Denver"],
+            // defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
+            // defaultTotalCost: ["$12,500", "$12,500"],
+			//
+			// showFlights:[false, false],
+			// showHotels:[false, false],
+			// showVenues:[false, false],
+			// venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
+			// hotelData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
+			// isYelpLoaded: [false, false], // for venues
+			// isYelpLoaded2: [false, false], // for hotels
+			//
+			// ButtonNames: "Show Names of People Attending",
+			// loading:true,
+			// all_results_loaded:true,
+			// namesOpen: false,
+			// allYelpLoaded:false,
         }
     }
 
     componentDidMount() {
 		// fetch Data here
-		if (this.state.loading) {
-			this.turnOffLoading = setTimeout(() => {
-				this.setState(() => ({loading: false}))
-			}, 500);
-		}
+		// if (this.state.loading) {
+		// 	this.turnOffLoading = setTimeout(() => {
+		// 		this.setState(() => ({loading: false}))
+		// 	}, 500);
+		// }
+
+		this.state.peopleNames.push(input_data["peopleInputs"][personIdx]["name"]);
+		this.state.defaultLocation.push(input_data["venueInputs"][venueIdx]["location"]);
+
 
 		if(this.state.all_results_loaded){
 			this.state.defaultLocation.map((_, index) => {
@@ -94,6 +115,27 @@ class Results extends Component {
 					});
 			})
 		}
+
+		var len_report = this.state.defaultLocation.length;
+		var i;
+		for(i = 0; i < len_report; len_report){
+			this.state.showFlights.push(false);
+			this.forceUpdate();
+			this.state.showHotels.push(false);
+			this.forceUpdate();
+			this.state.showVenues.push(false);
+			this.forceUpdate();
+			this.state.venueData.push([["","",""],["","",""],["","",""]]);
+			this.forceUpdate();
+			this.state.hotelData.push([["","",""],["","",""],["","",""]]);
+			this.forceUpdate();
+			this.state.isYelpLoaded.push(false);
+			this.forceUpdate();
+			this.state.isYelpLoaded2.push(false);
+			this.forceUpdate();
+		}
+
+		this.state.loading = false;
 
     }
 
@@ -150,7 +192,7 @@ class Results extends Component {
 						<Row className="justify-content-md-center">
 							<Col className = "borderMe" md="auto">
 								<Row>
-									 {this.state.defaultTotalCost[index] + " " } - { " " + this.state.defaultLocation[index] } 
+									 {this.state.defaultTotalCost[index] + " " } - { " " + this.state.defaultLocation[index] }
 								</Row>
 								<Row className="justify-content-md-center">
 									<Button variant = "outline-primary" className = "btn-margin" onClick={() => this.showFlights(index)}> Show Flight Info </Button>
