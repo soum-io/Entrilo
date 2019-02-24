@@ -1,5 +1,6 @@
 const express = require('express');
 var passport = require('passport');
+var Amadeus = require('amadeus');
 var Strategy = require('passport-local').Strategy;
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -289,17 +290,23 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
-app.get('/api/search', async (req, res) => {
+app.post('/api/search', async (req, res) => {
     try {
+        var amadeus = new Amadeus({
+            clientId: '01kBKVCiSvkcgZgC33ASxyiDGMXHC3te',
+            clientSecret: '6zcvK3TOsVqWNIGc'
+        });
         var startDate = req.body.startDate;
+        console.log(startDate);
         var endDate = req.body.endDate;
         var peopleInputs = req.body.peopleInputs;
+        console.log(peopleInputs);
         var venueInputs = req.body.peopleInputs;
 
-        var dest_set = Set();
+        var dest_set = new Set();
         var src_dict = {};
         for(var i = 0; i < venueInputs.length; i++) {
-            var dest_response = amadeus.referenceData.amadeus.referenceData.locations.airports.get({
+            var dest_response = amadeus.referenceData.locations.airports.get({
                 longitude : venueInputs[i].longitude,
                 latitude  : venueInputs[i].latitude
             });
@@ -307,7 +314,7 @@ app.get('/api/search', async (req, res) => {
         }
 
         for(var i = 0; i < peopleInputs.length; i++) {
-            var src_response = amadeus.referenceData.amadeus.referenceData.locations.airports.get({
+            var src_response = amadeus.referenceData.locations.airports.get({
                 longitude : peopleInputs[i].longitude,
                 latitude  : peopleInputs[i].latitude
             });
@@ -325,7 +332,7 @@ app.get('/api/search', async (req, res) => {
         endpoint_url+=('departure_date' + startDate);
 
         //TODO: change this hardcoded url to 'endpoint_url' once python script is complete
-        https.get('https://us-central1-hackathon-232619.cloudfunctions.net/pythonCall?message=HelloWorld', (resp) => {
+        https.get(endpoint_url, (resp) => {
             let data = '';
             resp.on('data', (chunk) => {
                 data += chunk;
