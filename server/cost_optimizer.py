@@ -47,12 +47,7 @@ def create_graph(departure_locations, meeting_options, departure_date):
             dest = pair[1]
             response = amadeus.shopping.flight_offers.get(origin=source, destination=dest, departureDate=departure_date, max=5)
             time.sleep(1)
-            print(response.request.verb)
-            print(response.request.path)
-            print(response.request.params)
-            print(response.data)
 
-            #print(response.data[0])
             offer_items = response.data
            
             # make first sentinel node
@@ -144,7 +139,6 @@ def create_graph(departure_locations, meeting_options, departure_date):
 
         except ResponseError as error:
             print(error)
-            print("I GOT AN ERROR")
 
     return G
 
@@ -166,7 +160,7 @@ def main(departure_locations, meeting_options, departure_date):
 def dummy():
     departure_locations = {}
     departure_locations['ORD'] = 5
-    departure_locations['ATX'] = 3
+    departure_locations['AUS'] = 3
     departure_locations['ATL'] = 4
 
     meeting_options = []
