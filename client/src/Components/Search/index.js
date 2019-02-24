@@ -10,7 +10,7 @@ import Autocomplete from 'react-autocomplete'
 //Put it on my bill
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {Link, withRouter} from "react-router-dom";
+import {Link, Redirect, withRouter} from "react-router-dom";
 
 
 class Search extends Component {
@@ -57,10 +57,31 @@ class Search extends Component {
         });
     }
 
+    handleSubmit = async e => {
+        e.preventDefault();
+        if (this.state.peopleInputs.length==0 || this.state.venueInputs.length==0){
+            return this.printErrorMessage();
+        }
+        this.setState({redirector:true});
+    };
+
+
+    printErrorMessage = () => {
+        if(this.state.peopleInputs.length==0){
+            this.setState({error: "Please include at least one Employee"});
+            return;
+        }
+        if(this.state.venueInputs.length==0){
+            this.setState({error: "Please include a preferred location"});
+        }
+
+    };
+
     render() {
-        return (
+        return this.state.redirector ? <Redirect to={'/results'}/> : (
             <div className = "searchDiv">
                 <Form>
+                 <h2> Search for Your Next Enterprise Trip! </h2>
                     <Form.Group controlId="tripName">
                         <Form.Label>Trip Name</Form.Label>
                         <Form.Control type="input" placeholder=""/>
@@ -107,7 +128,7 @@ class Search extends Component {
                                         <Form.Control placeholder="Address Location" onChange={this.onChangeAddress(index)} value={input.location}/>
                                         </Form.Group>
                                     </Col>
-                                    <Col xs={1.5}>
+                                    <Col >
                                         <Form.Label id="classLabel"> Travel Class: </Form.Label>
                                     </Col>
                                     <Col>
@@ -172,7 +193,7 @@ class Search extends Component {
                                         </Form.Group>
                                     </Col>
                                     <Col xs={1}>
-                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}>X</Button>
+                                        <Button onClick={this.deleteVenue(index)} variant={'outline-danger'}></Button>
                                     </Col>
                                 </Row>)}
                         </div>
@@ -204,9 +225,11 @@ class Search extends Component {
                     </Row>
 
 
-                    <Button variant="outline-primary" type="submit">
-                        <Link to="results">Results</Link>
+                    <Button variant="outline-primary" type="Results" onClick={(event) => this.handleSubmit(event)}>
+                    Results
                     </Button>
+                     <div>{this.state.error}</div>
+
                 </Form>
             </div>
         );

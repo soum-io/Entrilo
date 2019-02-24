@@ -5,6 +5,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 
 class Login extends Component {
@@ -38,16 +40,15 @@ class Login extends Component {
                 this.setState({error:''})
             }, 5000);
         }
-        //const body = await response.text();
-        //this.setState({responseToPost: body});
+
     };
 
     render() {
 
         return this.state.redirector ? <Redirect to={'/search'}/> : (
             <div>
-                <MuiThemeProvider>
-                    <div>
+                <MuiThemeProvider >
+                    <div className = "LoginBox">
                         <TextField
                             hintText="Enter your Username"
                             floatingLabelText="Username"
@@ -61,10 +62,20 @@ class Login extends Component {
                             onChange={(event, newValue) => this.setState({password: newValue})}
                         />
                         <br/>
-                        <RaisedButton label="Submit" primary={true} style={style}
-                                      onClick={(event) => this.handleSubmit(event)}/>
+                            <Row className="justify-content-md-center">
+                            <Col md="auto">
+                                    <RaisedButton label="Login" primary={true} style={style}
+                                onClick={(event) => this.handleSubmit(event)}/>
+                            </Col>
+                            </Row>
+
                         <br/>
-                        <div>{this.state.error}</div>
+                        <Row className="justify-content-md-center">
+                            <Col md="auto">
+                         <div>{this.state.error}</div>
+                        </Col>
+                        </Row>
+
                     </div>
                 </MuiThemeProvider>
             </div>
