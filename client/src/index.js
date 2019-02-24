@@ -14,7 +14,8 @@ import Container from "react-bootstrap/es/Container";
 
 const defaultUser = {
     company_name:'',
-    _id:''
+    _id:'',
+    results: {}
 };
 
 class App extends React.Component {

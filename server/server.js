@@ -380,6 +380,7 @@ app.post('/api/search', async (req, res) => {
                 var cost = t[2].substring(t[2].length-2).trim();
                 cost = cost.substring(0,cost.length-1);
                 var response = {peopleInputs:peopleInputs,venueInputs:venueInputs,city:city,cost:cost};
+                res.send(response);
             });
         }).on("error", (err) => {
             console.log("Error");

@@ -19,6 +19,8 @@ class Search extends Component {
         super(props);
         this.state = {
             startDate: new Date(),
+            result:{},
+            redirector:false,
             endDate: new Date(),
             peopleInputs: [],
             filterVenue:[],
@@ -71,16 +73,19 @@ class Search extends Component {
 
 
 
-        const response = await fetch('/api/search', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({startDate: this.state.startDate, endDate: this.state.endDate, peopleInputs: this.state.peopleInputs, venueInputs: this.state.venueInputs}),
-        });
+        // var response = await fetch('/api/search', {
+        //     method: 'POST',
+        //     credentials: 'include',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({startDate: this.state.startDate, endDate: this.state.endDate, peopleInputs: this.state.peopleInputs, venueInputs: this.state.venueInputs}),
+        // });
+        // this.props.history.push({pathname:'/results', state:{results:response.toString()}});
+        this.props.history.push({pathname:'/results'});
 
+        //this.setState({results:response,redirector:true});
 
         // const response = await fetch(url_string, {
         //     method: 'GET',
@@ -122,7 +127,7 @@ class Search extends Component {
     };
 
     render() {
-        return this.state.redirector ? <Redirect to={'/results'}/> : (
+        return this.state.redirector ? <Redirect to={{pathname: '/results'}} /> : (
             <div className = "searchDiv">
                 <Form>
                  <h2> Search for Your Next Enterprise Trip! </h2>

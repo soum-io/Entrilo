@@ -28,56 +28,89 @@ class Results extends Component {
     constructor(props) {
         super(props);
         this.state = {
-			peopleNames: [],
-			defaultAirport: [],
-			defaultLocation: [],
-			defaultTotalCost: [],
-
-			showFlights:[],
-			showHotels:[],
-			showVenues:[],
-			venueData:[],
-			hotelData:[],
-			isYelpLoaded: [], // for venues
-			isYelpLoaded2: [], // for hotels
-
-			ButtonNames: "Show Names of People Attending",
-			loading:true,
-			all_results_loaded:true,
-			namesOpen: false,
-			allYelpLoaded:false,
-
-            // peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
-            // defaultAirport: ["Denver", "Denver"],
-            // defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
-            // defaultTotalCost: ["$12,500", "$12,500"],
+			// peopleNames: [],
+			// // defaultAirport: [],
+			// defaultLocation: [],
+			// // defaultTotalCost: [],
 			//
-			// showFlights:[false, false],
-			// showHotels:[false, false],
-			// showVenues:[false, false],
-			// venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
-			// hotelData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
-			// isYelpLoaded: [false, false], // for venues
-			// isYelpLoaded2: [false, false], // for hotels
+			// showFlights:[],
+			// showHotels:[],
+			// showVenues:[],
+			// venueData:[],
+			// hotelData:[],
+			// isYelpLoaded: [], // for venues
+			// isYelpLoaded2: [], // for hotels
 			//
 			// ButtonNames: "Show Names of People Attending",
 			// loading:true,
 			// all_results_loaded:true,
 			// namesOpen: false,
 			// allYelpLoaded:false,
+
+            peopleNames: ["Michael Shea", "Jake Bonk", "Kanika"],
+            defaultAirport: ["Denver"],
+            defaultLocation: ["201 S. Ashland Ave. La Grange IL, 60525", "New York City"],
+            defaultTotalCost: ["$12,500"],
+
+			showFlights:[false, false],
+			showHotels:[false, false],
+			showVenues:[false, false],
+			venueData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
+			hotelData:[[["","",""],["","",""],["","",""]],[["","",""],["","",""],["","",""]]],
+			isYelpLoaded: [false, false], // for venues
+			isYelpLoaded2: [false, false], // for hotels
+
+			ButtonNames: "Show Names of People Attending",
+			loading:true,
+			all_results_loaded:true,
+			namesOpen: false,
+			allYelpLoaded:false,
         }
     }
 
     componentDidMount() {
 		// fetch Data here
-		// if (this.state.loading) {
-		// 	this.turnOffLoading = setTimeout(() => {
-		// 		this.setState(() => ({loading: false}))
-		// 	}, 500);
-		// }
+		if (this.state.loading) {
+			this.turnOffLoading = setTimeout(() => {
+				this.setState(() => ({loading: false}))
+			}, 500);
+		}
 
-		this.state.peopleNames.push(input_data["peopleInputs"][personIdx]["name"]);
-		this.state.defaultLocation.push(input_data["venueInputs"][venueIdx]["location"]);
+		// var input_data = JSON.parse(this.props.location.state.results);
+		// console.log(input_data);
+		// var peopleInputs = input_data["peopleInputs"];
+		// var venueInputs = input_data["venueInputs"];
+		// var x = 0;
+		//
+		// for(x = 0; x < peopleInputs.length; x++){
+		// 	this.state.peopleNames.push(peopleInputs[x]["name"]);
+		// 	this.forceUpdate();
+		// }
+		//
+		// for(x = 0; x < venueInputs.length; x++){
+		// 	this.state.defaultLocation.push(venueInputs[x]["location"]);
+		// 	this.forceUpdate();
+		// }
+		//
+		//
+		// var len_report = this.state.defaultLocation.length;
+		// var i;
+		// for(i = 0; i < len_report; len_report){
+		// 	this.state.showFlights.push(false);
+		// 	this.forceUpdate();
+		// 	this.state.showHotels.push(false);
+		// 	this.forceUpdate();
+		// 	this.state.showVenues.push(false);
+		// 	this.forceUpdate();
+		// 	this.state.venueData.push([["","",""],["","",""],["","",""]]);
+		// 	this.forceUpdate();
+		// 	this.state.hotelData.push([["","",""],["","",""],["","",""]]);
+		// 	this.forceUpdate();
+		// 	this.state.isYelpLoaded.push(false);
+		// 	this.forceUpdate();
+		// 	this.state.isYelpLoaded2.push(false);
+		// 	this.forceUpdate();
+		// }
 
 
 		if(this.state.all_results_loaded){
@@ -114,25 +147,6 @@ class Results extends Component {
 						})
 					});
 			})
-		}
-
-		var len_report = this.state.defaultLocation.length;
-		var i;
-		for(i = 0; i < len_report; len_report){
-			this.state.showFlights.push(false);
-			this.forceUpdate();
-			this.state.showHotels.push(false);
-			this.forceUpdate();
-			this.state.showVenues.push(false);
-			this.forceUpdate();
-			this.state.venueData.push([["","",""],["","",""],["","",""]]);
-			this.forceUpdate();
-			this.state.hotelData.push([["","",""],["","",""],["","",""]]);
-			this.forceUpdate();
-			this.state.isYelpLoaded.push(false);
-			this.forceUpdate();
-			this.state.isYelpLoaded2.push(false);
-			this.forceUpdate();
 		}
 
 		this.state.loading = false;
