@@ -25,7 +25,8 @@ class Search extends Component {
             filterPeople:[],
             venueOptions:[],
             venueInputs: [],
-            peopleOptions:[]
+            peopleOptions:[],
+            error: ''
         };
         fetch('/api/account',{method: 'GET',
             credentials: 'include',})
@@ -62,27 +63,50 @@ class Search extends Component {
         if (this.state.peopleInputs.length==0 || this.state.venueInputs.length==0){
             return this.printErrorMessage();
         }
-        this.setState({redirector:true});
-        console.log(this.state);
         var url_string = '/api/search';
-        url_string+=('?startDate=' + this.state.startDate);
-        url_string+=('?endDate=' + this.state.endDate);
-        url_string+=('?peopleInputs=' + this.state.peopleInputs);
-        url_string+=('?venueInputs=' + this.state.venueInputs);
-        const response = await fetch(url_string, {
-            method: 'GET',
+        // url_string+=('?startDate=' + this.state.startDate);
+        // url_string+=('?endDate=' + this.state.endDate);
+        // url_string+=('?peopleInputs=' + this.state.peopleInputs);
+        // url_string+=('?venueInputs=' + this.state.venueInputs);
+
+
+
+        const response = await fetch('/api/search', {
+            method: 'POST',
             credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({startDate: this.state.startDate, endDate: this.state.endDate, peopleInputs: this.state.peopleInputs, venueInputs: this.state.venueInputs}),
         });
-        //TODO: parse + display results
-        if(response.ok){
-            const resJson = await response.json();
-            this.setState({redirector:true})
-        }else{
-            this.setState({error:"Unable to successfully login"});
-            setTimeout(()=>{
-                this.setState({error:''})
-            }, 5000);
-        }
+
+
+        // const response = await fetch(url_string, {
+        //     method: 'GET',
+        //     credentials: 'include',
+        // });
+
+        // if(response.ok){
+        //     const resJson = await response.json();
+        //     var result = resJson.parse();
+        //     var cities = [];
+        //     var i;
+        //     for (i = 0; i < result.length; i++) {
+        //         let city = {};
+        //         city.loc =
+        //     }
+        //     }
+        //     for
+        //     this.setState({redirector:true})
+        // }else{
+        //     this.setState({error:"Unable to successfully search"});
+        //     setTimeout(()=>{
+        //         this.setState({error:''})
+        //     }, 5000);
+        // }
+
+        //this.setState({redirector:true});
     };
 
 
